@@ -1,0 +1,9 @@
+POST http://localhost:5000/api/resume/upload
+Content-Type: multipart/form-data; boundary=WebAppBoundary
+
+--WebAppBoundary
+Content-Disposition: form-data; name="resumeFile"; filename="N-resume.pdf"
+Content-Type: application/pdf
+
+< ./N-resume.pdf
+--WebAppBoundary--

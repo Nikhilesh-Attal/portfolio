@@ -2,6 +2,11 @@
 import mongoose from 'mongoose';
 
 const projectSchema = new mongoose.Schema({
+  category:{
+    type: String,
+    enum: ['Web development', 'Full Stack', 'Automation'],
+    required:true
+  },
   title: { 
     type: String, 
     required: true // This means a project MUST have a title
@@ -11,23 +16,31 @@ const projectSchema = new mongoose.Schema({
     required: true 
   },
   shortDescription: { 
-    type: String 
-  },
-  image: { 
-    type: String, // This will store your ImageKit URL
+    type: String,
     required: true 
   },
+  images: { 
+    type: [String], // Array of strings for ImageKit URLs
+    required: [true, 'At least one project image is required'],
+    validate: {
+      validator: function(v) {
+        // Ensures the array exists, has at least 1 item, and no more than 3
+        return v && v.length > 0 && v.length <= 3;
+      },
+      message: 'You can upload a maximum of 3 images per project'
+    }
+  },
   liveUrl: { 
-    type: String 
+    type: String,
+    required: true
   },
   githubUrl: { 
-    type: String 
+    type: String,
+    required: true 
   },
   // Notice the brackets [] - this tells MongoDB it's an array of strings!
   tags: [{ type: String }], 
   techStack: [{ type: String }],
-  screenshots: [{ type: String }],
-  caseStudy: [{ type: String }],
   status: { 
     type: String,
     default: 'completed' // Sets a default value if you don't provide one

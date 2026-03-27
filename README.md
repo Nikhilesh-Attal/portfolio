@@ -76,9 +76,34 @@ Frontend (Next.js) → Backend API (Node.js/Express) → MongoDB Atlas
 portfolio/
   frontend/
     app/
+      globals.css
+      layout.tsx
+      page.tsx
     components/
+      ui/ 
+      about.tsx
+      contact.tsx
+      experience.tsx
+      hackathon.tsx
+      hero.tsx
+      navbar.tsx
+      philosophy.tsx
+      projects.tsx
+      review.tsx
+      skills.tsx
+      theme-provider.tsx
+      theme-toggle.tsx
+      what-i-bring.tsx
+    hooks/
+      use-mobile.tsx
+      ues-toast.tsx
+    lib/
+      api.tsx
+      utils.tsx
     public/
-  
+    styles/
+      globals.css
+
   backend/
     config/
       db.js
@@ -90,6 +115,13 @@ portfolio/
       skillController.js
       reviewController.js
       resumeController.js
+    models/
+      AdminUser.js
+      ExperienceModel.js
+      HackathonModel.js
+      ProjectModel.js
+      ReviewModel.js
+      SkillModel.js
     routes/
       projectRoutes.js
       experienceRoutes.js
@@ -117,8 +149,6 @@ liveUrl
 githubUrl
 tags []
 techStack []
-screenshots []
-caseStudy []
 status
 displayOrder
 createdAt
@@ -233,9 +263,11 @@ Bash
 cd frontend
 npm install
 npm run dev
+npm install next@14 react@18 react-dom@18
+npm install three @react-three/fiber @react-three/drei
 
 Frontend runs on:
-http://localhost:9002
+http://localhost:3000
 
 Backend runs on:
 http://localhost:5000
