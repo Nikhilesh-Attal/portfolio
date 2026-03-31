@@ -17,3 +17,7 @@ backend/dist/
 # OS files
 .DS_Store
 Thumbs.db
+
+# One-time scripts & Data seeding
+seedAdmin.js
+backend/seedAdmin.js

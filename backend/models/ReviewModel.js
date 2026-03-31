@@ -6,6 +6,11 @@ const reviewSchema = new mongoose.Schema({
         required: true
     },
 
+    reviewerEmail: {
+        type: String,
+        required: true
+    },
+
     reviewerTitle: {
         type: String,
         required: true
@@ -31,7 +36,12 @@ const reviewSchema = new mongoose.Schema({
     createdAt: {
         type: Date,
         default: Date.now
-    }
+    },
+
+    isApproved: {
+        type: Boolean,
+        default: false
+    },
 }, {
     timestamps: true
 });

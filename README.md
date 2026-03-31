@@ -76,10 +76,16 @@ Frontend (Next.js) → Backend API (Node.js/Express) → MongoDB Atlas
 portfolio/
   frontend/
     app/
+      admin\
+        dashboard\
+          page.tsx
       globals.css
       layout.tsx
       page.tsx
     components/
+      admin\
+        projectForm.tsx
+        experienceForm.tsx
       ui/ 
       about.tsx
       contact.tsx
@@ -173,9 +179,11 @@ displayOrder
 
 reviews
 reviewerName
+reviewerEmail
 reviewerTitle (e.g., "Tech Lead at AI Company")
 reviewText
 rating (number)
+isApproved (bydefault false)
 displayOrder
 createdAt
 

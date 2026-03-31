@@ -10,6 +10,7 @@ import hackathonRoutes from './routes/hackathonRoutes.js';
 import skillRoutes from './routes/skillRoutes.js';
 import reviewRoutes from "./routes/reviewRoutes.js";
 import resumeRoutes from "./routes/resumeRoutes.js";
+//import authRoutes from "./routes/authRoutes.js";
 
 dotenv.config();
 
@@ -21,6 +22,10 @@ const app = express();
 // Middleware to allow your server to accept JSON data from the frontend
 app.use(cors({ origin: 'http://localhost:3000' }));
 app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({
+  limit: '10mb',
+  extended: true
+}));
 
 // Mount your routes
 app.use('/api/projects', projectRoutes);
@@ -29,6 +34,7 @@ app.use('/api/hackathons', hackathonRoutes);
 app.use('/api/skills', skillRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/resume', resumeRoutes);
+//app.use('/api/auth', authRoutes);
 
 const PORT = process.env.PORT || 5000;
 

@@ -1,5 +1,6 @@
 import express from 'express';
 import { getProjects, createProject, updateProject, deleteProject } from '../controllers/projectContoller.js';
+import { protect } from "../middleware/auth.js"
 
 const router = express.Router();
 
@@ -8,13 +9,13 @@ const router = express.Router();
 
   router.route('/')
   .get(getProjects)     // Public: Anyone can see projects
-  .post(createProject); // Private: Only you can add projects
-  //.post(protect, admin, createRoject); // Private Admin route: Only you can add projects
+  //.post(createProject); // Private: Only you can add projects
+  .post(protect, createProject); // Private Admin route: Only you can add projects
   
   router.route('/:id')
-  .put(updateProject)   // Private: Only you can edit a project
-  //.put(protect, admin, updateProject) // Private Admin route: Only you can edit a project
+  //.put(updateProject)   // Private: Only you can edit a project
+  .put(protect, updateProject) // Private Admin route: Only you can edit a project
 
-  .delete(deleteProject); // Private: Only you can delete a project
-  //.delete(protect, admin, deleteProject) // Private Admin route: Only you can delete a project
+  //.delete(deleteProject); // Private: Only you can delete a project
+  .delete(protect, deleteProject) // Private Admin route: Only you can delete a project
 export default router;
