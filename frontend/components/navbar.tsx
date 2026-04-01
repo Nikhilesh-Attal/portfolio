@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
-import { Menu, X } from "lucide-react"
+import { Menu, X, Lock } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/components/theme-toggle"
+import Link from "next/link"
 
 const navItems = [
   { name: "About", href: "#about" },
@@ -103,6 +104,13 @@ export default function Navbar() {
               </motion.button>
             ))}
             <ThemeToggle />
+
+            {/* Admin Gateway Symbol */}
+            <Link href="/login" tabIndex={-1}>
+              <Button variant={"ghost"} size="icon" className="text-muted-foreground hover:text-foreground hover:bg-muted/50.rounded-full" areia-label="Admin Login">
+                <Lock size={16} />
+              </Button>
+            </Link>
           </div>
 
           {/* Mobile menu button */}

@@ -10,7 +10,7 @@ import hackathonRoutes from './routes/hackathonRoutes.js';
 import skillRoutes from './routes/skillRoutes.js';
 import reviewRoutes from "./routes/reviewRoutes.js";
 import resumeRoutes from "./routes/resumeRoutes.js";
-//import authRoutes from "./routes/authRoutes.js";
+import authRoutes from "./routes/authRoutes.js";
 
 dotenv.config();
 
@@ -34,7 +34,7 @@ app.use('/api/hackathons', hackathonRoutes);
 app.use('/api/skills', skillRoutes);
 app.use('/api/reviews', reviewRoutes);
 app.use('/api/resume', resumeRoutes);
-//app.use('/api/auth', authRoutes);
+app.use('/api/auth', authRoutes);
 
 const PORT = process.env.PORT || 5000;
 

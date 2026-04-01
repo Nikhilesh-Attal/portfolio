@@ -1,4 +1,4 @@
-import AdminUser from "../models/AdminUser";
+import AdminUser from "../models/AdminUser.js";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
 
@@ -29,7 +29,7 @@ export const login = async (req, res) => {
             { expiresIn: '1h' });
 
         //send the token as a response
-        res.status({
+        res.status(200).json({
             message: "Login sucessfully",
             token: token,
          });
