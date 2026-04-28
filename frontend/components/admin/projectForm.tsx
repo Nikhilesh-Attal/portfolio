@@ -1,5 +1,5 @@
 "use client"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 
 const convertToBase64 = (file: File): Promise<string> => {
     return new Promise((resolve, reject) => {
@@ -10,7 +10,24 @@ const convertToBase64 = (file: File): Promise<string> => {
     });
 };
 
-export default function ProjectForm() {
+interface ProjectFormProps {
+    initialData?: any;
+    onSuccess: () => void;
+    onCancel: () => void;
+}
+
+export default function ProjectForm({ initialData, onSuccess, onCancle} : ProkectFprmProps) {
+
+    useEffect(() => {
+        if(initialData) {
+            setFormData({
+                ...initialData,
+                tags: Array.isArray(initialData.tags) ? initialData.tags.join(', ') : '',
+                techStack: Array.isArray(initialData.techStack) ? initialData.techStack.join(', ') : '',
+            });
+        }
+    }, [initialData]);
+
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState("");
     const [imageFiles, setImageFiles] = useState<File[]>([]);
@@ -26,6 +43,7 @@ export default function ProjectForm() {
         tags: '', 
         techStack: '',
         status: 'active',
+        videoUrl: '',
     });
 
     const handleInputChanges = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -46,7 +64,7 @@ export default function ProjectForm() {
         }
     };
 
-    const handleSubmit = async (e: React.FormEvent) => {
+    {/*const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
         setMessage('');
@@ -96,6 +114,7 @@ export default function ProjectForm() {
                 tags: '',
                 techStack: '',
                 status: 'active',
+                videoUrl: '',
             });
             setImageFiles([]);
 
@@ -105,7 +124,31 @@ export default function ProjectForm() {
         } finally {
             setLoading(false);
         }
-    };
+    };*/}
+    const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    
+    const isEdit = !!initialData?._id;
+    const url = isEdit 
+        ? `http://localhost:5000/api/projects/${initialData._id}` 
+        : 'http://localhost:5000/api/projects';
+
+    try {
+        const response = await fetch(url, {
+            method: isEdit ? 'PUT' : 'POST', // Dynamic method
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${localStorage.getItem('token')}`
+            },
+            body: JSON.stringify(projectPayload),
+        });
+
+        if (response.ok) {
+            onSuccess(); // Close form and refresh table
+        }
+    } catch (err) { /* handle error */ }
+};
 
     return (
         <form onSubmit={handleSubmit} className="max-w-2xl p-6 bg-white rounded-lg shadow-md space-y-4 text-gray-800">
@@ -143,14 +186,18 @@ export default function ProjectForm() {
                 <textarea rows={4} name="description" required value={formData.description} onChange={handleInputChanges} className="mt-1 block w-full border border-gray-300 bg-white rounded-md p-2" />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-3 gap-4">
                 <div>
                     <label className="block text-sm font-medium">Live URL</label>
-                    <input type="url" name="liveUrl" required value={formData.liveUrl} onChange={handleInputChanges} className="mt-1 block w-full border border-gray-300 bg-white rounded-md p-2" />
+                    <input type="url" name="liveUrl" value={formData.liveUrl} onChange={handleInputChanges} className="mt-1 block w-full border border-gray-300 bg-white rounded-md p-2" />
                 </div>
                 <div>
                     <label className="block text-sm font-medium">Github URL</label>
-                    <input type="url" name="githubUrl" required value={formData.githubUrl} onChange={handleInputChanges} className="mt-1 block w-full border border-gray-300 bg-white rounded-md p-2" />
+                    <input type="url" name="githubUrl" value={formData.githubUrl} onChange={handleInputChanges} className="mt-1 block w-full border border-gray-300 bg-white rounded-md p-2" />
+                </div>
+                <div>
+                    <label className="block text-sm font-medium">Video URL</label>
+                    <input type="url" name="videoUrl" value={formData.githubUrl} onChange={handleInputChanges} className="mt-1 block w-full border border-gray-300 bg-white rounded-md p-2" />
                 </div>
             </div>
 

@@ -32,11 +32,14 @@ const projectSchema = new mongoose.Schema({
   },
   liveUrl: { 
     type: String,
-    required: true
+    //required: true
   },
   githubUrl: { 
     type: String,
-    required: true 
+    //required: true 
+  },
+  videoUrl: {
+    type: String,
   },
   // Notice the brackets [] - this tells MongoDB it's an array of strings!
   tags: [{ type: String }], 
@@ -44,6 +47,10 @@ const projectSchema = new mongoose.Schema({
   status: { 
     type: String,
     default: 'completed' // Sets a default value if you don't provide one
+  },
+  isPinned: {
+    type: Boolean,
+    default: false
   },
   displayOrder: { 
     type: Number,

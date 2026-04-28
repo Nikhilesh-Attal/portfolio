@@ -158,6 +158,7 @@ techStack []
 status
 displayOrder
 createdAt
+videoUrl
 
 experience
 role
