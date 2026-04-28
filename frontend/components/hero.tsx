@@ -2,11 +2,13 @@
 
 import { motion } from "framer-motion"
 import { Button } from "@/components/ui/button"
-import { ArrowRight, Download } from "lucide-react"
+import { ArrowRight, ArrowDown, Download } from "lucide-react"
 import Image from "next/image"
 import { Canvas } from "@react-three/fiber"
 import { OrbitControls, Sphere, MeshDistortMaterial } from "@react-three/drei"
 import { Suspense, useEffect, useState } from "react"
+import { FaRobot, FaReact, FaDatabase, FaRocket, FaBrain } from "react-icons/fa";
+import { SiN8N } from "react-icons/si"; // Perfect for your automation focus
 
 function AnimatedSphere() {
   return (
@@ -117,6 +119,60 @@ export default function Hero() {
     }
   }
 
+  const techIcons = [
+    { icon: <FaRobot />, label: "AI Agents", position: { top: "10%", right: "10%" }, delay: 0 },
+    { icon: <SiN8N />, label: "n8n", position: { top: "20%", left: "5%" }, delay: 0.5 },
+    { icon: <FaDatabase />, label: "MongoDB", position: { bottom: "15%", right: "5%" }, delay: 1 },
+    { icon: <FaReact />, label: "React", position: { bottom: "10%", left: "10%" }, delay: 1.5 },
+    { icon: <FaRocket />, label: "SaaS", position: { top: "50%", right: "-5%" }, delay: 2 },
+    { icon: <FaBrain />, label: "Prompt Eng", position: { top: "50%", left: "-5%" }, delay: 2.5 },
+  ];
+
+  const [resumeUrl, setResumeUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchResume = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/api/resume");
+        if (response.ok) {
+          const data = await response.json();
+          setResumeUrl(data.resumeUrl);
+        }
+      } catch (error) {
+        console.error("Failed to fetch resume link:", error);
+      }
+    };
+    fetchResume();
+  }, []);
+
+  const handleDownloadResume = async () => {
+    if (!resumeUrl) {
+      alert("Resume is currently being updated. Please try again in a moment!");
+      return;
+    }
+
+    try {
+      const response = await fetch(resumeUrl);
+      const blob = await response.blob();
+      const url = window.URL.createObjectURL(blob);
+    
+      // Create a temporary hidden link to trigger download
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', 'Nikhilesh_Attal_Resume.pdf'); // You can name the file here
+      document.body.appendChild(link);
+      link.click();
+    
+      // Clean up
+      link.parentNode?.removeChild(link);
+      window.URL.revokeObjectURL(url);
+    } catch (error) {
+      console.error("Download failed, falling back to view mode:", error);
+     // If CORS blocks the fetch, we fall back to opening in a new tab
+     window.open(resumeUrl, "_blank");
+    }
+  };
+              
   return (
     <section className="min-h-screen flex items-center justify-center relative overflow-hidden">
       {/* Background gradient */}
@@ -140,18 +196,18 @@ export default function Hero() {
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.8, delay: 0.2 }}
               >
-                I'm <span className="text-gradient">Nikhilesh Attal</span> — I Build{" "}
-                <span className="text-gradient">Fast, Honest</span> Products —{" "}
-                <motion.span
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.8, delay: 0.6 }}
-                  className="block"
-                >
-                  Without Waiting for Permission
-                </motion.span>
-              </motion.h1>
-            </motion.div>
+                I’m <span className="text-gradient">Nikhilesh Attal</span> — I Automate the{" "}
+                <span className="text-gradient">Obvious</span>, Engineering the{" "}
+                  <motion.span
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.8, delay: 0.6 }}
+                    className="block text-gradient"
+                  >
+                    Impossible.
+                  </motion.span>
+                </motion.h1>
+              </motion.div>
 
             <motion.p
               initial={{ opacity: 0, y: 20 }}
@@ -159,8 +215,9 @@ export default function Hero() {
               transition={{ duration: 0.8, delay: 0.4 }}
               className="text-lg sm:text-xl text-muted-foreground max-w-2xl leading-relaxed"
             >
-              AI-powered full-stack indie maker crafting intelligent automation tools and startup solutions with
-              Firebase, Supabase, and Appwrite. I turn complex problems into simple, elegant products that just work.
+              AI Automation Engineer crafting intelligent systems with **n8n, Next.js, and LLMs**. 
+              I specialize in turning unstructured data into structured assets and building 
+              autonomous workflows that eliminate manual grind.
             </motion.p>
 
             <motion.div
@@ -180,7 +237,17 @@ export default function Hero() {
 
               <Button size="lg" variant="outline" onClick={() => scrollToSection("projects")} className="group">
                 View projects
-                <Download className="ml-2 h-4 w-4 transition-transform group-hover:translate-y-1" />
+                <ArrowDown className="ml-2 h-4 w-4 transition-transform group-hover:translate-y-1" />
+              </Button>
+            
+              <Button 
+                size="lg" 
+                variant="outline" 
+                onClick={handleDownloadResume} 
+                className="group border-purple-500/50 hover:bg-purple-500/10 transition-all"
+                >
+                  Download Resume
+                  <Download className="ml-2 h-4 w-4 transition-transform group-hover:translate-y-1" />
               </Button>
             </motion.div>
 
@@ -237,36 +304,25 @@ export default function Hero() {
               </div>
 
               {/* Floating Tech Icons */}
-              {[
-                { icon: "⚛️", position: { top: "10%", right: "10%" }, delay: 0 },
-                { icon: "🔥", position: { top: "20%", left: "5%" }, delay: 0.5 },
-                { icon: "🤖", position: { bottom: "15%", right: "5%" }, delay: 1 },
-                { icon: "⚡", position: { bottom: "10%", left: "10%" }, delay: 1.5 },
-                { icon: "🚀", position: { top: "50%", right: "-5%" }, delay: 2 },
-                { icon: "🧠", position: { top: "50%", left: "-5%" }, delay: 2.5 },
-              ].map((item, index) => (
+              {techIcons.map((item, index) => (
                 <motion.div
                   key={index}
-                  className="absolute w-12 h-12 bg-background/80 backdrop-blur-sm rounded-full flex items-center justify-center text-2xl border border-border/50 shadow-lg"
+                  className="group absolute w-14 h-14 bg-background/80 backdrop-blur-md rounded-2xl flex items-center justify-center border border-border/50 shadow-xl"
                   style={item.position}
                   initial={{ opacity: 0, scale: 0 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: item.delay + 1, duration: 0.5 }}
-                  whileHover={{ scale: 1.2, rotate: 10 }}
+                  whileHover={{ scale: 1.1, rotate: 5, backgroundColor: "var(--primary)" }}
                 >
-                  <motion.span
-                    animate={{
-                      y: [0, -5, 0],
-                      rotate: [0, 5, -5, 0],
-                    }}
-                    transition={{
-                      duration: 3,
-                      repeat: Number.POSITIVE_INFINITY,
-                      delay: item.delay,
-                    }}
-                  >
-                    {item.icon}
-                  </motion.span>
+                  <div className="relative flex flex-col items-center justify-center w-full h-full text-primary group-hover:text-white transition-colors">
+                    {/* Icon - Stays Centered */}
+                    <span className="text-2xl">{item.icon}</span>
+      
+                    {/* Label - Only shows on hover, absolute so it doesn't push the icon */}
+                    <span className="absolute -bottom-6 scale-0 group-hover:scale-100 text-[10px] font-bold uppercase tracking-tighter bg-background/90 px-2 py-1 rounded border border-border/50 transition-all duration-200 whitespace-nowrap text-foreground">
+                      {item.label}
+                    </span>
+                  </div>
                 </motion.div>
               ))}
             </div>
