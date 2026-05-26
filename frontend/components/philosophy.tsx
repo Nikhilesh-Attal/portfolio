@@ -10,7 +10,7 @@ export default function Philosophy() {
 
   return (
     <section className="py-20 relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-r from-purple-500/5 via-blue-500/5 to-emerald-500/5" />
+      <div className="absolute inset-0 pointer-events-none -z-10 bg-gradient-to-r from-purple-500/5 via-blue-500/5 to-emerald-500/5" />
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center" ref={ref}>
         <motion.div
@@ -29,32 +29,32 @@ export default function Philosophy() {
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.8, delay: 0.5 }}
             >
-              "I learn by building.{" "}
+              "I don't just write code.{" "}
             </motion.span>
             <motion.span
               initial={{ opacity: 0, y: 20 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.8, delay: 0.7 }}
-              className="text-gradient"
+              className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-blue-600"
             >
-              AI is not a shortcut
+              I architect systems
             </motion.span>
             <motion.span
               initial={{ opacity: 0, y: 20 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.8, delay: 0.9 }}
             >
-              , it's my partner in shipping{" "}
+              , and AI is my partner in shipping{" "}
             </motion.span>
             <motion.span
               initial={{ opacity: 0, y: 20 }}
               animate={isInView ? { opacity: 1, y: 0 } : {}}
               transition={{ duration: 0.8, delay: 1.1 }}
-              className="relative"
+              className="relative inline-block"
             >
-              better products faster
+              production-ready products faster
               <motion.div
-                className="absolute bottom-0 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full"
+                className="absolute -bottom-2 left-0 right-0 h-1 bg-gradient-to-r from-purple-600 to-blue-600 rounded-full"
                 initial={{ scaleX: 0 }}
                 animate={isInView ? { scaleX: 1 } : {}}
                 transition={{ duration: 1, delay: 1.5 }}
@@ -70,8 +70,7 @@ export default function Philosophy() {
             transition={{ duration: 0.8, delay: 1.3 }}
             className="text-lg text-muted-foreground max-w-2xl mx-auto"
           >
-            Every line of code is a lesson. Every product is an experiment. Every failure is data for the next
-            iteration.
+            The focus isn't on writing everything from scratch—it's on solving real problems. By leveraging AI to accelerate development, I can focus entirely on scalable architecture, seamless user experiences, and delivering actual value.
           </motion.p>
         </motion.div>
       </div>

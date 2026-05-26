@@ -3,27 +3,28 @@
 import { motion } from "framer-motion"
 import { useInView } from "framer-motion"
 import { useRef } from "react"
+import { FaRocket, FaBrain, FaFire, FaCogs, FaMagic } from "react-icons/fa"
 
 const qualities = [
   {
-    emoji: "🚀",
-    title: "Fast shipping",
-    description: "From idea to production in weeks, not months",
+    icon: FaRocket,
+    title: "AI-Accelerated Shipping",
+    description: "Leveraging AI to go from idea to production in days, not months.",
   },
   {
-    emoji: "🧠",
-    title: "Honest thinking",
-    description: "Clear communication, realistic timelines, no BS",
+    icon: FaBrain,
+    title: "System Architecture",
+    description: "Designing scalable databases, RAG pipelines, and intelligent backends.",
   },
   {
-    emoji: "🔥",
-    title: "Founder energy",
-    description: "I care about your product like it's my own",
+    icon: FaFire,
+    title: "Founder Energy",
+    description: "I build products with a focus on business logic and real-world value.",
   },
   {
-    emoji: "💪",
-    title: "DSA-ready mindset",
-    description: "Strong fundamentals meet practical problem-solving",
+    icon: FaCogs,
+    title: "Workflow Automation",
+    description: "Connecting APIs and building custom pipelines to eliminate manual work.",
   },
 ]
 
@@ -33,7 +34,7 @@ export default function WhatIBring() {
 
   return (
     <section className="py-20 relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-muted/5 to-transparent" />
+      <div className="absolute inset-0 pointer-events-none -z-10 bg-gradient-to-b from-transparent via-muted/5 to-transparent" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" ref={ref}>
         <motion.div
@@ -67,7 +68,9 @@ export default function WhatIBring() {
                 whileHover={{ scale: 1.2, rotate: 10 }}
                 transition={{ type: "spring", stiffness: 300 }}
               >
-                <div className="text-6xl mb-2 relative z-10">{quality.emoji}</div>
+                <div className="mb-4 relative z-10 flex justify-center">
+                  <quality.icon className="text-5xl text-purple-500 drop-shadow-lg" />
+                </div>
 
                 {/* Particle burst effect on hover */}
                 <motion.div
@@ -129,7 +132,7 @@ export default function WhatIBring() {
               }}
               className="text-2xl"
             >
-              ✨
+              <FaMagic />
             </motion.span>
           </div>
         </motion.div>

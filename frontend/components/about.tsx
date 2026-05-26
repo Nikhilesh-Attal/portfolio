@@ -51,7 +51,7 @@ export default function About() {
   }, [])
 
   return (
-    <section id="about" className="py-24 relative overflow-hidden">
+    <section id="about" className="py-24 relative overflow-hidden marg-bottom-[-100px]">
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-primary/5 to-transparent" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" ref={ref}>
@@ -64,7 +64,7 @@ export default function About() {
           <h2 className="text-3xl sm:text-5xl font-bold font-space-grotesk mb-8">The Mission & The Maker</h2>
           <p className="text-xl text-muted-foreground max-w-4xl mx-auto mb-10 leading-relaxed">
             I’m a developer who bridges the gap between raw code and intelligent systems. I believe in the power of{" "}
-            <span className="relative inline-block min-w-[180px] text-left">
+            <span className="relative inline-block min-w-[230px] text-left">
               <AnimatePresence mode="wait">
                 <motion.span
                   key={currentValueIndex}
@@ -72,7 +72,7 @@ export default function About() {
                   animate={{ opacity: 1, y: 0 }}
                   exit={{ opacity: 0, y: -15 }}
                   transition={{ duration: 0.4 }}
-                  className="text-gradient font-bold absolute"
+                  className="text-gradient font-bold inline-block whitespace-nowrap"
                 >
                   {values[currentValueIndex]}
                 </motion.span>
@@ -83,7 +83,7 @@ export default function About() {
           </p>
 
           <div className="flex flex-wrap justify-center gap-3">
-            {["n8n", "Next.js", "TypeScript", "Python", "LLMs", "MongoDB"].map((tech, index) => (
+            {["n8n", "Next.js", "TypeScript", "MongoDB"].map((tech, index) => (
               <motion.div
                 key={tech}
                 initial={{ opacity: 0, scale: 0.8 }}

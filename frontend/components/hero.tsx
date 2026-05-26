@@ -174,7 +174,7 @@ export default function Hero() {
   };
               
   return (
-    <section className="min-h-screen flex items-center justify-center relative overflow-hidden">
+    <section className="min-h-screen flex items-center justify-center relative overflow-hidden marg-bottom-[-100px]">
       {/* Background gradient */}
       <div className="absolute inset-0 bg-gradient-to-br from-purple-500/10 via-blue-500/5 to-emerald-500/10" />
 
@@ -251,7 +251,7 @@ export default function Hero() {
               </Button>
             </motion.div>
 
-            {/* Stats */}
+            {/* Stats
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -268,7 +268,7 @@ export default function Hero() {
                   <div className="text-sm text-muted-foreground">{stat.label}</div>
                 </div>
               ))}
-            </motion.div>
+            </motion.div> */}
           </div>
 
           {/* Right side - Profile Image with Animation */}
@@ -298,7 +298,7 @@ export default function Hero() {
                       }}
                     />
                     {/* Fallback initials */}
-                    <span className="text-6xl font-bold text-gradient absolute inset-0 flex items-center justify-center">NA</span>
+                    {/* <span className="text-6xl font-bold text-gradient absolute inset-0 flex items-center justify-center">NA</span> */}
                   </div>
                 </div>
               </div>

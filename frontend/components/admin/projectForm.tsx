@@ -16,7 +16,7 @@ interface ProjectFormProps {
     onCancel: () => void;
 }
 
-export default function ProjectForm({ initialData, onSuccess, onCancle} : ProkectFprmProps) {
+export default function ProjectForm({ initialData, onSuccess, onCancel} : ProjectFormProps) {
 
     useEffect(() => {
         if(initialData) {
@@ -64,91 +64,79 @@ export default function ProjectForm({ initialData, onSuccess, onCancle} : Prokec
         }
     };
 
-    {/*const handleSubmit = async (e: React.FormEvent) => {
-        e.preventDefault();
-        setLoading(true);
-        setMessage('');
-
-        try {
-            // 1. Convert files to Base64
-            const base64Images = await Promise.all(imageFiles.map(convertToBase64));
-
-            // 2. Format payload to match Mongoose Schema exactly
-            const projectPayload = {
-                ...formData,
-                // Convert strings to Arrays for the backend
-                tags: formData.tags.split(',').map(tag => tag.trim()).filter(Boolean),
-                techStack: formData.techStack.split(',').map(tech => tech.trim()).filter(Boolean),
-                images: base64Images,
-                // Ensure screenshots/caseStudy match schema if you aren't using them yet
-                screenshots: [],
-                caseStudy: []
-            };
-
-            // 3. Send to backend
-            const response = await fetch('http://localhost:5000/api/projects', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    // 'Authorization': `Bearer ${localStorage.getItem('token')}` // Uncomment when ready
-                },
-                body: JSON.stringify(projectPayload),
-            });
-
-            const data = await response.json();
-
-            if (!response.ok) {
-                throw new Error(data.message || "Failed to create project");
-            }
-
-            setMessage('Project created successfully!');
-            
-            // Reset Form
-            setFormData({
-                category: 'Web development',
-                title: '',
-                description: '',
-                shortDescription: '',
-                liveUrl: '',
-                githubUrl: '',
-                tags: '',
-                techStack: '',
-                status: 'active',
-                videoUrl: '',
-            });
-            setImageFiles([]);
-
-        } catch (error: any) {
-            console.error("Submission Error:", error);
-            setMessage(error.message || 'An error occurred');
-        } finally {
-            setLoading(false);
-        }
-    };*/}
     const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-    
-    const isEdit = !!initialData?._id;
-    const url = isEdit 
-        ? `http://localhost:5000/api/projects/${initialData._id}` 
-        : 'http://localhost:5000/api/projects';
 
-    try {
+    setLoading(true);
+    setMessage("");
+
+    const isEdit = !!initialData?._id;
+
+    const url = isEdit
+        ? `http://localhost:5000/api/projects/${initialData._id}`
+        : "http://localhost:5000/api/projects";
+
+        try {
+
+        // Convert images
+        const base64Images = await Promise.all(
+            imageFiles.map(convertToBase64)
+        );
+
+        // Create payload
+        const projectPayload = {
+            ...formData,
+
+            tags: formData.tags
+                .split(",")
+                .map(tag => tag.trim())
+                .filter(Boolean),
+
+            techStack: formData.techStack
+                .split(",")
+                .map(tech => tech.trim())
+                .filter(Boolean),
+
+            images: base64Images,
+        };
+
         const response = await fetch(url, {
-            method: isEdit ? 'PUT' : 'POST', // Dynamic method
+            method: isEdit ? "PUT" : "POST",
+
             headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${localStorage.getItem('token')}`
+                "Content-Type": "application/json",
+                "Authorization": `Bearer ${localStorage.getItem("token")}`,
             },
+
             body: JSON.stringify(projectPayload),
         });
 
-        if (response.ok) {
-            onSuccess(); // Close form and refresh table
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.message || "Failed to save project");
         }
-    } catch (err) { /* handle error */ }
-};
+
+        setMessage(
+            isEdit
+                ? "Project updated successfully!"
+                : "Project created successfully!"
+        );
+
+        onSuccess();
+
+        } catch (error: any) {
+
+        console.error(error);
+
+        setMessage(
+            error.message || "Something went wrong"
+        );
+
+        } finally {
+            setLoading(false);
+        }
+    };
 
     return (
         <form onSubmit={handleSubmit} className="max-w-2xl p-6 bg-white rounded-lg shadow-md space-y-4 text-gray-800">

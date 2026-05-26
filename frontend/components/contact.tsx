@@ -58,7 +58,7 @@ export default function Contact() {
 
   return (
     <section id="contact" className="py-20 relative overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-muted/5 to-transparent" />
+      <div className="absolute inset-0 pointer-events-none -z-10 bg-gradient-to-b from-transparent via-muted/5 to-transparent" />
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8" ref={ref}>
         <motion.div
@@ -84,7 +84,10 @@ export default function Contact() {
                 animate={isInView ? { opacity: 1, y: 0 } : {}}
                 transition={{ duration: 0.6, delay: index * 0.1 }}
               >
-                <Card className="group cursor-pointer transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/10 hover:-translate-y-1 overflow-hidden">
+                <Card 
+                  onClick={() => window.open(method.href, method.label === 'Email' ? '_self' : '_blank')} 
+                  className="group cursor-pointer transition-all duration-300 hover:shadow-lg hover:shadow-purple-500/10 hover:-translate-y-1 overflow-hidden relative"
+                >
                   <CardContent className="p-6 text-center">
                     <motion.div
                       className={`inline-flex items-center justify-center w-12 h-12 rounded-full bg-gradient-to-r ${method.color} mb-4`}
@@ -98,21 +101,31 @@ export default function Contact() {
                     <p className="text-sm text-muted-foreground mb-4">{method.value}</p>
 
                     <div className="flex gap-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => window.open(method.href, "_blank")}
-                        className="flex-1 group-hover:bg-primary group-hover:text-primary-foreground transition-colors"
-                      >
-                        Open
-                      </Button>
+  <Button
+    variant="outline"
+    size="sm"
+    asChild
+    className="flex-1 group-hover:bg-primary group-hover:text-primary-foreground transition-colors"
+  >
+    <a href={method.href} target="_blank" rel="noopener noreferrer">
+      Open
+    </a>
+  </Button>
 
-                      {method.label === "Email" && (
-                        <Button variant="outline" size="sm" onClick={copyEmail} className="px-3 bg-transparent">
-                          {copiedEmail ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
-                        </Button>
-                      )}
-                    </div>
+  {method.label === "Email" && (
+    <Button 
+  variant="outline" 
+  size="sm" 
+  onClick={(e) => { 
+    e.stopPropagation(); 
+    copyEmail(); 
+  }} 
+  className="px-3 bg-transparent relative z-10"
+>
+      {copiedEmail ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
+    </Button>
+  )}
+</div>
                   </CardContent>
                 </Card>
               </motion.div>
@@ -128,52 +141,54 @@ export default function Contact() {
           className="text-center"
         >
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Button
-              size="lg"
-              onClick={() => window.open("mailto:nikhileshatal@gmail.com", "_blank")}
-              className="group bg-gradient-to-r from-purple-600 via-blue-600 to-emerald-600 hover:from-purple-700 hover:via-blue-700 hover:to-emerald-700 text-white border-0 px-8 py-4 text-lg font-semibold relative overflow-hidden"
-            >
-              <span className="relative z-10 flex items-center">
-                Start a conversation
-                <Mail className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-              </span>
+  <Button
+    size="lg"
+    asChild
+    className="group bg-gradient-to-r from-purple-600 via-blue-600 to-emerald-600 hover:from-purple-700 hover:via-blue-700 hover:to-emerald-700 text-white border-0 px-8 py-4 text-lg font-semibold relative overflow-hidden"
+  >
+    <a href="https://cal.com/nikhilesh-attal/30min" target="_blank" rel="noopener noreferrer">
+  <span className="relative z-10 flex items-center">
+    Start a conversation
+    <Mail className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
+  </span>
 
-              {/* Animated background */}
-              <motion.div
-                className="absolute inset-0 bg-gradient-to-r from-purple-400 via-blue-400 to-emerald-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                initial={false}
-              />
+      {/* Animated background */}
+      <motion.div
+        className="absolute inset-0 pointer-events-none bg-gradient-to-r from-purple-400 via-blue-400 to-emerald-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+        initial={false}
+      />
 
-              {/* Confetti effect on click */}
-              <motion.div
-                className="absolute inset-0 pointer-events-none"
-                initial={{ opacity: 0 }}
-                whileTap={{ opacity: 1 }}
-              >
-                {[...Array(12)].map((_, i) => (
-                  <motion.div
-                    key={i}
-                    className="absolute w-2 h-2 bg-white rounded-full"
-                    initial={{ scale: 0, x: "50%", y: "50%" }}
-                    whileTap={{
-                      scale: [0, 1, 0],
-                      x: [0, (Math.random() - 0.5) * 200],
-                      y: [0, (Math.random() - 0.5) * 200],
-                    }}
-                    transition={{
-                      duration: 0.8,
-                      delay: i * 0.05,
-                      ease: "easeOut",
-                    }}
-                    style={{
-                      left: "50%",
-                      top: "50%",
-                    }}
-                  />
-                ))}
-              </motion.div>
-            </Button>
-          </motion.div>
+      {/* Confetti effect on click */}
+      <motion.div
+        className="absolute inset-0 pointer-events-none"
+        initial={{ opacity: 0 }}
+        whileTap={{ opacity: 1 }}
+      >
+        {[...Array(12)].map((_, i) => (
+          <motion.div
+            key={i}
+            className="absolute w-2 h-2 bg-white rounded-full"
+            initial={{ scale: 0, x: "50%", y: "50%" }}
+            whileTap={{
+              scale: [0, 1, 0],
+              x: [0, (Math.random() - 0.5) * 200],
+              y: [0, (Math.random() - 0.5) * 200],
+            }}
+            transition={{
+              duration: 0.8,
+              delay: i * 0.05,
+              ease: "easeOut",
+            }}
+            style={{
+              left: "50%",
+              top: "50%",
+            }}
+          />
+        ))}
+      </motion.div>
+    </a>
+  </Button>
+</motion.div>
 
           <motion.p
             initial={{ opacity: 0 }}
@@ -181,7 +196,7 @@ export default function Contact() {
             transition={{ duration: 0.8, delay: 0.6 }}
             className="text-sm text-muted-foreground mt-4"
           >
-            Usually respond within 24 hours ⚡
+            Usually respond within 24 hours
           </motion.p>
         </motion.div>
 
@@ -193,9 +208,9 @@ export default function Contact() {
           className="text-center mt-16 pt-8 border-t border-border/50"
         >
           <p className="text-sm text-muted-foreground">
-            Built with ❤️ using Next.js, TypeScript, Tailwind CSS, and Framer Motion
+            Built with using Next.js, TypeScript, Tailwind CSS, and Framer Motion
           </p>
-          <p className="text-xs text-muted-foreground mt-2">© 2024 Nikhilesh Attal. All rights reserved.</p>
+          <p className="text-xs text-muted-foreground mt-2">© {new Date().getFullYear()} Nikhilesh Attal. All rights reserved.</p>
         </motion.div>
       </div>
     </section>

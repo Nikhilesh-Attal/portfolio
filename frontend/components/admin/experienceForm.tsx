@@ -1,7 +1,7 @@
 "use client"
 import { useState } from "react"
 
-export default function ExperimentForm() {
+export default function ExperienceForm() {
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState("");
     
@@ -15,6 +15,7 @@ export default function ExperimentForm() {
         technologies: '',
         responsibilities: '',
         certificateUrl: '',
+        displayOrder: 0,
     });
 
     const handleInputChanges = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -38,9 +39,10 @@ export default function ExperimentForm() {
                     end: formData.endDate || null, // Allow null for ongoing experiences
                 },
                 workType: formData.workType,
-                responsibilities: formData.responsibilities.split(',').map(item => item.trim()).filter(Boolean), // Convert comma-separated string to array
+                responsibilities: formData.responsibilities.split('\n').map(item => item.trim()).filter(Boolean), // Convert comma-separated string to array
                 technologies: formData.technologies.split(',').map(item => item.trim()).filter(Boolean), // Convert comma-separated string to array
                 certificateUrl: formData.certificateUrl.split(',').map(item => item.trim()).filter(Boolean),
+                displayOrder: Number(formData.displayOrder) || 0,
             };
 
             // 2. Send to backend
@@ -71,6 +73,7 @@ export default function ExperimentForm() {
                 technologies: '',
                 responsibilities: '',
                 certificateUrl: '',
+                displayOrder: 0,
             });
 
         } catch (error: any) {
@@ -94,23 +97,23 @@ export default function ExperimentForm() {
             <div className="grid grid-cols-2 gap-4">
                 <div>
                     <label className="block text-sm font-medium">Role</label>
-                    <input type="text" name="role" required value={formData.role} onChange={handleInputChanges} className="mt-1 block w-full border border-gray-300 bg-white bg-white rounded-md p-2" />
+                    <input type="text" name="role" required value={formData.role} onChange={handleInputChanges} className="mt-1 block w-full border border-gray-300 bg-white rounded-md p-2" />
                 </div>
 
                 <div>
                     <label className="block text-sm font-medium">Company</label>
-                    <input type="text" name="company" required value={formData.company} onChange={handleInputChanges} className="mt-1 block w-full border border-gray-300 bg-white bg-white rounded-md p-2" />
+                    <input type="text" name="company" required value={formData.company} onChange={handleInputChanges} className="mt-1 block w-full border border-gray-300 bg-white rounded-md p-2" />
                 </div>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
                 <div>
                     <label className="block text-sm font-medium">Start Date</label>
-                    <input type="date" name="startDate" required value={formData.startDate} onChange={handleInputChanges} className="mt-1 block w-full border border-gray-300 bg-white bg-white rounded-md p-2" />
+                    <input type="date" name="startDate" required value={formData.startDate} onChange={handleInputChanges} className="mt-1 block w-full border border-gray-300 bg-white rounded-md p-2" />
                 </div>
                 <div>
                     <label className="block text-sm font-medium">End Date</label>
-                    <input type="date" name="endDate" value={formData.endDate} onChange={handleInputChanges} className="mt-1 block w-full border border-gray-300 bg-white bg-white rounded-md p-2" />
+                    <input type="date" name="endDate" value={formData.endDate} onChange={handleInputChanges} className="mt-1 block w-full border border-gray-300 bg-white rounded-md p-2" />
                 </div>
             </div>
 
@@ -131,7 +134,7 @@ export default function ExperimentForm() {
 
             <div>
                 <label className="block text-sm font-medium">Responsibilities</label>
-                <textarea rows={10} name="responsibilities" required value={formData.responsibilities} onChange={handleInputChanges} className="mt-1 block w-full border border-gray-300 bg-white rounded-md p-2" />
+                <textarea rows={6} name="responsibilities" required value={formData.responsibilities} onChange={handleInputChanges} className="mt-1 block w-full border border-gray-300 bg-white rounded-md p-2"  placeholder="Built automation workflows Integrated APIs Optimized data processing"/>
             </div>
 
             <div className="grid grid-cols-2 gap-4">
@@ -139,6 +142,18 @@ export default function ExperimentForm() {
                     <label className="block text-sm font-medium">Certificate URL (comma separated)</label>
                     <input type="url" name="certificateUrl" value={formData.certificateUrl} onChange={handleInputChanges} className="mt-1 block w-full border border-gray-300 bg-white rounded-md p-2" />
                 </div>
+            </div>
+
+            <div>
+                <label className="block text-sm font-medium">Display Order</label>
+
+                <input
+                    type="number"
+                    name="displayOrder"
+                    value={formData.displayOrder}
+                    onChange={handleInputChanges}
+                    className="mt-1 block w-full border border-gray-300 bg-white rounded-md p-2"
+                />
             </div>
 
             <button type="submit" disabled={loading} className="w-full bg-blue-600 text-white font-bold py-2 px-4 rounded-md hover:bg-blue-700 disabled:bg-blue-300 transition-colors">
