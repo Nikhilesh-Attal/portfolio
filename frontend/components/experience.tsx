@@ -33,10 +33,12 @@ export default function Experience() {
   const [loading, setLoading] = useState(true)
   const [visibleCount, setVisibleCount] = useState(6)
 
+  const PORT = (import.meta as any).env?.BACKEND_PORT ?? "";
+
   useEffect(() => {
     const fetchExperience = async ()=> {
       try{
-        const response = await fetch('http://localhost:5000/api/experiences')
+        const response = await fetch(`${PORT}/api/experiences`)
 
         if(!response.ok){
           throw new Error('Failed to fetch experiences')

@@ -130,10 +130,12 @@ export default function Hero() {
 
   const [resumeUrl, setResumeUrl] = useState<string | null>(null);
 
+  const PORT = (import.meta as any).env?.BACKEND_PORT ?? "";
+  
   useEffect(() => {
     const fetchResume = async () => {
       try {
-        const response = await fetch("http://localhost:5000/api/resume");
+        const response = await fetch(`${PORT}/api/resume`);
         if (response.ok) {
           const data = await response.json();
           setResumeUrl(data.resumeUrl);

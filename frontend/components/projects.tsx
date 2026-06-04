@@ -38,11 +38,13 @@ export default function Projects() {
     const [selectedProject, setSelectedProject] = useState<Project | null>(null)
     const [currentScreenshot, setCurrentScreenshot] = useState(0)
 
+    const PORT = process.env.NEXT_PUBLIC_BACKEND_PORT;
+
     // 1. Fetch Data from Backend
     useEffect(() => {
         const fetchProjects = async () => {
             try {
-                const response = await fetch("http://localhost:5000/api/projects")
+                const response = await fetch(`${PORT}/api/projects`)
                 if (!response.ok) throw new Error("Failed to fetch")
                 const data = await response.json()
                 

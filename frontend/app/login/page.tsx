@@ -15,13 +15,15 @@ export default function LoginPage(){
     const [isLoading, setIsLoading] = useState(false);
     const [showPassword, setShowPassword] = useState(false);
 
+    const PORT = process.env.NEXT_PUBLIC_BACKEND_PORT;
+
     const handleLogin = async (e:React.FormEvent) => {
         e.preventDefault();
         setIsLoading(true);
         setError("");
 
         try{
-            const response = await fetch("http://localhost:5000/api/auth/login", {
+            const response = await fetch(`${PORT}/api/auth/login`, {
                 method: "POST",
                 headers: {
                     "Content-Type" : "application/json",
@@ -41,8 +43,12 @@ export default function LoginPage(){
             //redirect to admin dashoard
             router.push("/admin");
 
-        }catch(error : any){
-            setError(error.message);
+        } catch (error) {
+            if (error instanceof Error) {
+                setError(error.message);
+            } else {
+                setError("An unexpected error occurred");
+            }
         }finally{
             setIsLoading(false);
         }

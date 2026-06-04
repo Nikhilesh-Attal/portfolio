@@ -19,13 +19,26 @@ connectDB();
 
 const app = express();
 
-// Middleware to allow your server to accept JSON data from the frontend
-app.use(cors({ origin: 'http://localhost:3000' }));
-app.use(express.json({ limit: '10mb' }));
-app.use(express.urlencoded({
-  limit: '10mb',
-  extended: true
+// 1. UPDATED CORS CONFIGURATION
+const allowedOrigins = [
+  'http://localhost:3000',
+  // Add your deployed frontend URL here when you host it (e.g., 'https://my-portfolio.vercel.app')
+];
+
+app.use(cors({
+  origin: function (origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  credentials: true,
 }));
+
+app.use(express.json({ limit: '10mb' }));
+app.use(express.urlencoded({ limit: '10mb', extended: true }));
 
 // Mount your routes
 app.use('/api/projects', projectRoutes);

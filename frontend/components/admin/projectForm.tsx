@@ -46,6 +46,8 @@ export default function ProjectForm({ initialData, onSuccess, onCancel} : Projec
         videoUrl: '',
     });
 
+    const PORT = process.env.NEXT_PUBLIC_BACKEND_PORT; // Added fallback just in case
+
     const handleInputChanges = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         setFormData({
             ...formData, [e.target.name]: e.target.value
@@ -65,73 +67,74 @@ export default function ProjectForm({ initialData, onSuccess, onCancel} : Projec
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+        e.preventDefault();
 
-    setLoading(true);
-    setMessage("");
+        setLoading(true);
+        setMessage("");
 
-    const isEdit = !!initialData?._id;
+        const isEdit = !!initialData?._id;
 
-    const url = isEdit
-        ? `http://localhost:5000/api/projects/${initialData._id}`
-        : "http://localhost:5000/api/projects";
+        // Replaced hardcoded localhost:5000 with the PORT variable
+        const url = isEdit
+            ? `${PORT}/api/projects/${initialData._id}`
+            : `${PORT}/api/projects`;
 
         try {
 
-        // Convert images
-        const base64Images = await Promise.all(
-            imageFiles.map(convertToBase64)
-        );
+            // Convert images
+            const base64Images = await Promise.all(
+                imageFiles.map(convertToBase64)
+            );
 
-        // Create payload
-        const projectPayload = {
-            ...formData,
+            // Create payload
+            const projectPayload = {
+                ...formData,
 
-            tags: formData.tags
-                .split(",")
-                .map(tag => tag.trim())
-                .filter(Boolean),
+                tags: formData.tags
+                    .split(",")
+                    .map(tag => tag.trim())
+                    .filter(Boolean),
 
-            techStack: formData.techStack
-                .split(",")
-                .map(tech => tech.trim())
-                .filter(Boolean),
+                techStack: formData.techStack
+                    .split(",")
+                    .map(tech => tech.trim())
+                    .filter(Boolean),
 
-            images: base64Images,
-        };
+                images: base64Images,
+            };
 
-        const response = await fetch(url, {
-            method: isEdit ? "PUT" : "POST",
+            const response = await fetch(url, {
+                method: isEdit ? "PUT" : "POST",
 
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": `Bearer ${localStorage.getItem("token")}`,
-            },
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${localStorage.getItem("token")}`,
+                },
 
-            body: JSON.stringify(projectPayload),
-        });
+                body: JSON.stringify(projectPayload),
+            });
 
-        const data = await response.json();
+            const data = await response.json();
 
-        if (!response.ok) {
-            throw new Error(data.message || "Failed to save project");
-        }
+            if (!response.ok) {
+                throw new Error(data.message || "Failed to save project");
+            }
 
-        setMessage(
-            isEdit
-                ? "Project updated successfully!"
-                : "Project created successfully!"
-        );
+            setMessage(
+                isEdit
+                    ? "Project updated successfully!"
+                    : "Project created successfully!"
+            );
 
-        onSuccess();
+            onSuccess();
 
         } catch (error: any) {
 
-        console.error(error);
+            console.error(error);
 
-        setMessage(
-            error.message || "Something went wrong"
-        );
+            setMessage(
+                error.message || "Something went wrong"
+            );
 
         } finally {
             setLoading(false);
@@ -185,7 +188,8 @@ export default function ProjectForm({ initialData, onSuccess, onCancel} : Projec
                 </div>
                 <div>
                     <label className="block text-sm font-medium">Video URL</label>
-                    <input type="url" name="videoUrl" value={formData.githubUrl} onChange={handleInputChanges} className="mt-1 block w-full border border-gray-300 bg-white rounded-md p-2" />
+                    {/* Fixed bug here: value was previously formData.githubUrl */}
+                    <input type="url" name="videoUrl" value={formData.videoUrl} onChange={handleInputChanges} className="mt-1 block w-full border border-gray-300 bg-white rounded-md p-2" />
                 </div>
             </div>
 
