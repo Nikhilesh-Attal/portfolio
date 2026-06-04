@@ -1,10 +1,12 @@
 "use client"
 
 import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation" // <-- Added this
+import { useRouter } from "next/navigation"
 
-import ProjectTable from "../project/page"
-import ExperienceTable from "../experience/page"
+// IMPORTANT: Updated import paths! 
+// Ensure you have created these files in your components directory.
+import ProjectTable from "@/components/admin/projectTable"
+import ExperienceTable from "@/components/admin/experienceTable"
 
 import {
   FolderKanban,
@@ -15,20 +17,15 @@ import {
 export default function AdminDashboard() {
   const router = useRouter()
   
-  // Added authentication state
   const [isAuthenticated, setIsAuthenticated] = useState(false)
   const [activePage, setActivePage] = useState("dashboard")
 
-  // Check for token on mount
   useEffect(() => {
     const token = localStorage.getItem("adminToken")
     
     if (!token) {
-      // If no token exists, immediately redirect to your login page
-      // (Change "/login" to "/" if your login is on your homepage)
       router.push("/login") 
     } else {
-      // If token exists, reveal the dashboard
       setIsAuthenticated(true)
     }
   }, [router])
@@ -42,7 +39,6 @@ export default function AdminDashboard() {
       default:
         return (
           <div className="space-y-8">
-            {/* Welcome Banner */}
             <div className="bg-gradient-to-r from-blue-600 via-cyan-500 to-blue-500 text-white rounded-3xl p-8 shadow-xl">
               <h2 className="text-4xl font-bold mb-4">
                 Welcome Back 👋
@@ -53,9 +49,7 @@ export default function AdminDashboard() {
               </p>
             </div>
 
-            {/* Dashboard Cards */}
             <div className="grid md:grid-cols-2 gap-6">
-              {/* Projects Card */}
               <button
                 onClick={() => setActivePage("projects")}
                 className="group bg-white border border-gray-200 rounded-3xl p-8 text-left hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
@@ -72,7 +66,6 @@ export default function AdminDashboard() {
                 </p>
               </button>
 
-              {/* Experience Card */}
               <button
                 onClick={() => setActivePage("experience")}
                 className="group bg-white border border-gray-200 rounded-3xl p-8 text-left hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
@@ -94,7 +87,6 @@ export default function AdminDashboard() {
     }
   }
 
-  // Prevent a brief "flicker" of the dashboard before the redirect happens
   if (!isAuthenticated) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
@@ -107,7 +99,6 @@ export default function AdminDashboard() {
     <div className="min-h-screen bg-gray-100 flex">
       {/* Sidebar */}
       <aside className="w-72 bg-white border-r border-gray-200 p-6 hidden md:flex flex-col fixed h-screen">
-        {/* Logo */}
         <div className="mb-12">
           <h1 className="text-3xl font-bold text-gray-900">
             Admin Panel
@@ -117,9 +108,7 @@ export default function AdminDashboard() {
           </p>
         </div>
 
-        {/* Navigation */}
         <nav className="space-y-3">
-          {/* Dashboard */}
           <button
             onClick={() => setActivePage("dashboard")}
             className={`w-full flex items-center gap-3 px-5 py-4 rounded-2xl font-medium transition-all duration-300 ${
@@ -132,7 +121,6 @@ export default function AdminDashboard() {
             Dashboard
           </button>
 
-          {/* Projects */}
           <button
             onClick={() => setActivePage("projects")}
             className={`w-full flex items-center gap-3 px-5 py-4 rounded-2xl font-medium transition-all duration-300 ${
@@ -145,7 +133,6 @@ export default function AdminDashboard() {
             Projects
           </button>
 
-          {/* Experience */}
           <button
             onClick={() => setActivePage("experience")}
             className={`w-full flex items-center gap-3 px-5 py-4 rounded-2xl font-medium transition-all duration-300 ${
@@ -163,7 +150,6 @@ export default function AdminDashboard() {
       {/* Main Content */}
       <main className="flex-1 md:ml-72 p-8">
         <div className="max-w-7xl mx-auto">
-          {/* Page Header */}
           <div className="mb-10">
             <h1 className="text-5xl font-bold text-gray-900 capitalize">
               {activePage}
@@ -173,7 +159,6 @@ export default function AdminDashboard() {
             </p>
           </div>
 
-          {/* Dynamic Content */}
           <div className="bg-white rounded-3xl shadow-sm border border-gray-200 p-8">
             {renderContent()}
           </div>
