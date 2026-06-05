@@ -40,7 +40,6 @@ const experienceSchema = new mongoose.Schema({
 
     certificateUrl: [{
         type: String,
-        required: true
     }],
 
     displayOrder: {

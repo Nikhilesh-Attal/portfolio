@@ -127,9 +127,6 @@ export default function About() {
                     </div>
                     <h3 className="text-xl font-bold mb-3 font-space-grotesk">{trait.title}</h3>
                     <p className="text-sm text-muted-foreground leading-relaxed">{trait.description}</p>
-                    <div className="mt-6 text-xs text-primary font-bold flex items-center gap-1 opacity-60 group-hover:opacity-100 transition-opacity">
-                      <Sparkles className="w-3 h-3" /> Hover for the story
-                    </div>
                   </div>
 
                   {/* Back Side */}

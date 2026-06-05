@@ -35,6 +35,21 @@ const hackathonSchema = new mongoose.Schema({
         default: 0
     },
 
+    member: {
+        type: Number,
+        default: 4
+    },
+
+    duration: {
+        type: String,
+        required: true
+    },
+
+    role: {
+        type: String,
+        required: true
+    },
+
     createdAt: {
         type: Date,
         default: Date.now

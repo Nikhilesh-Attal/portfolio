@@ -13,6 +13,7 @@ import {
   Briefcase,
   LayoutDashboard,
 } from "lucide-react"
+import HackathonTable from "@/components/admin/hackathonTable"
 
 export default function AdminDashboard() {
   const router = useRouter()
@@ -36,6 +37,8 @@ export default function AdminDashboard() {
         return <ProjectTable />
       case "experience":
         return <ExperienceTable />
+      case "hackathons":
+        return <HackathonTable />
       default:
         return (
           <div className="space-y-8">
@@ -79,6 +82,22 @@ export default function AdminDashboard() {
                 <p className="text-gray-500 leading-relaxed">
                   Add internships, jobs, work experience,
                   certifications, and professional achievements.
+                </p>
+              </button>
+
+              <button
+                onClick={() => setActivePage("hackathons")}
+                className="group bg-white border border-gray-200 rounded-3xl p-8 text-left hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
+              >
+                <div className="w-16 h-16 rounded-2xl bg-cyan-100 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                  <Briefcase className="w-8 h-8 text-cyan-600" />
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-3">
+                  Manage Hackathons
+                </h3>
+                <p className="text-gray-500 leading-relaxed">
+                  Add hackathons, competitions, and coding challenges
+                  you've participated in.
                 </p>
               </button>
             </div>
@@ -143,6 +162,18 @@ export default function AdminDashboard() {
           >
             <Briefcase className="w-5 h-5" />
             Experience
+          </button>
+
+          <button
+            onClick={() => setActivePage("hackathons")}
+            className={`w-full flex items-center gap-3 px-5 py-4 rounded-2xl font-medium transition-all duration-300 ${
+              activePage === "hackathons"
+                ? "bg-blue-600 text-white shadow-lg"
+                : "hover:bg-gray-100 text-gray-700"
+            }`}
+          >
+            <Briefcase className="w-5 h-5" />
+            Hackathons
           </button>
         </nav>
       </aside>
