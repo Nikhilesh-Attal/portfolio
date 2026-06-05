@@ -7,13 +7,14 @@ import { useRouter } from "next/navigation"
 // Ensure you have created these files in your components directory.
 import ProjectTable from "@/components/admin/projectTable"
 import ExperienceTable from "@/components/admin/experienceTable"
-
+import ResumeManager from "@/components/admin/resumeManager"
 import {
   FolderKanban,
   Briefcase,
-  LayoutDashboard,
+  LayoutDashboard, FileText,
 } from "lucide-react"
 import HackathonTable from "@/components/admin/hackathonTable"
+import SkillTable from "@/components/admin/skillTable"
 
 export default function AdminDashboard() {
   const router = useRouter()
@@ -39,6 +40,11 @@ export default function AdminDashboard() {
         return <ExperienceTable />
       case "hackathons":
         return <HackathonTable />
+      case "resume":
+        return <ResumeManager />
+      case "skill":
+        return <SkillTable />
+
       default:
         return (
           <div className="space-y-8">
@@ -98,6 +104,32 @@ export default function AdminDashboard() {
                 <p className="text-gray-500 leading-relaxed">
                   Add hackathons, competitions, and coding challenges
                   you've participated in.
+                </p>
+              </button>
+
+              <button
+                onClick={() => setActivePage("resume")}
+                className="group bg-white border border-gray-200 rounded-3xl p-8 text-left hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
+              >
+                <div className="w-16 h-16 rounded-2xl bg-blue-100 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                  <FileText className="w-8 h-8 text-blue-600" />
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-3">Manage Resume</h3>
+                <p className="text-gray-500 leading-relaxed">
+                  Upload and update your active PDF resume.
+                </p>
+              </button>
+
+              <button
+                onClick={() => setActivePage("skill")}
+                className="group bg-white border border-gray-200 rounded-3xl p-8 text-left hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
+              >
+                <div className="w-16 h-16 rounded-2xl bg-blue-100 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                  <FileText className="w-8 h-8 text-blue-600" />
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-3">Manage Skills</h3>
+                <p className="text-gray-500 leading-relaxed">
+                  Manage and add new skills to your portfolio.
                 </p>
               </button>
             </div>
@@ -174,6 +206,30 @@ export default function AdminDashboard() {
           >
             <Briefcase className="w-5 h-5" />
             Hackathons
+          </button>
+
+          <button
+            onClick={() => setActivePage("resume")}
+            className={`w-full flex items-center gap-3 px-5 py-4 rounded-2xl font-medium transition-all duration-300 ${
+              activePage === "resume"
+                ? "bg-blue-600 text-white shadow-lg"
+                : "hover:bg-gray-100 text-gray-700"
+            }`}
+          >
+            <FileText className="w-5 h-5" />
+            Resume
+          </button>
+
+          <button
+            onClick={() => setActivePage("skill")}
+            className={`w-full flex items-center gap-3 px-5 py-4 rounded-2xl font-medium transition-all duration-300 ${
+              activePage === "skill"
+                ? "bg-blue-600 text-white shadow-lg"
+                : "hover:bg-gray-100 text-gray-700"
+            }`}
+          >
+            <FileText className="w-5 h-5" />
+            Skills
           </button>
         </nav>
       </aside>

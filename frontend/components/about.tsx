@@ -98,7 +98,7 @@ export default function About() {
           </div>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+        <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8  marg-bottom-[-100px]">
           {traits.map((trait, index) => (
             <motion.div
               key={trait.title}
@@ -152,7 +152,7 @@ export default function About() {
           transition={{ duration: 0.8, delay: 0.6 }}
           className="text-center mt-24 p-10 rounded-3xl bg-card border border-primary/10 shadow-2xl relative overflow-hidden group"
         >
-          <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-purple-500 to-blue-500" />
+          <div className="absolute top-0 left-0 w-1 h-full bg-gradient-to-b from-purple-500 to-blue-500 marg-bottom-[-100px]" />
           <blockquote className="text-2xl sm:text-3xl font-bold font-space-grotesk text-foreground mb-6 leading-tight">
             "I don't wait for permission to build. I leverage AI as a force multiplier to ship products that turn manual toil into automated assets."
           </blockquote>

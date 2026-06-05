@@ -26,6 +26,7 @@ interface Review {
   reviewText: string;
   rating: number;
   avatar?: string;
+  isApproved: boolean;
 }
 
 export default function Reviews() {
@@ -48,15 +49,18 @@ export default function Reviews() {
     rating: 5,
   })
 
+  const API_BASE = (process.env.NEXT_PUBLIC_BACKEND_PORT || "").replace(/\/$/, "");
+  
   // Fetch approved reviews from backend
   useEffect(() => {
     const fetchReviews = async () => {
       try {
-        const response = await fetch('http://localhost:5000/api/reviews')
+        const response = await fetch(`${API_BASE}/api/reviews`)
         const result = await response.json()
 
         if (result.success) {
-          setReviews(result.data)
+          const approvedReviews = result.data.filter((review: Review) => review.isApproved === true);
+          setReviews(approvedReviews)
         } else {
           setError(result.message || "Failed to load reviews")
         }
@@ -76,7 +80,7 @@ export default function Reviews() {
     setIsSubmitting(true)
     
     try {
-      const response = await fetch('http://localhost:5000/api/reviews', {
+      const response = await fetch(`${API_BASE}/api/reviews`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(formData)

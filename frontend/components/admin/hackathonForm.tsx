@@ -151,11 +151,11 @@ export default function HackathonForm({ initialData, onSuccess, onCancel }: Hack
             </div>
 
             <div className="flex gap-4 mt-6">
-                <Button type="submit" disabled={loading} className="w-full">
+                <Button type="submit" disabled={loading} className="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-md hover:bg-blue-700 disabled:bg-blue-300 transition-colors">
                     {loading ? 'Processing...' : (initialData ? 'Update Hackathon' : 'Save Hackathon')}
                 </Button>
                 {onCancel && (
-                    <Button type="button" variant="outline" onClick={onCancel} className="w-full">
+                    <Button type="button" variant="outline" onClick={onCancel} className="w-full bg-gray-200 text-gray-800 font-bold py-3 px-4 rounded-md hover:bg-gray-300 transition-colors">
                         Cancel
                     </Button>
                 )}

@@ -71,7 +71,7 @@ export default function Experience() {
     }
 
     return (
-        <section className="py-20 relative overflow-hidden bg-slate-50">
+        <section id="experience" className="py-20 relative overflow-hidden bg-slate-50">
             <div className="absolute inset-0 bg-gradient-to-b from-transparent via-blue-500/10 to-transparent" />
 
             <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8">

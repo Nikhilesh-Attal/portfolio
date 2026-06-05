@@ -13,6 +13,9 @@ export default function Hackathons() {
   
   const [hackathons, setHackathons] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
+  
+  // NEW: State to control how many hackathons are visible (default 4)
+  const [visibleCount, setVisibleCount] = useState(4)
 
   const API_BASE = (process.env.NEXT_PUBLIC_BACKEND_PORT || "").replace(/\/$/, "");
 
@@ -54,19 +57,20 @@ export default function Hackathons() {
   }
 
   return (
-    <section className="py-20 relative overflow-hidden bg-background">
+    <section id="hackathons" className="py-20 relative overflow-hidden bg-background">
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-muted/20 to-transparent" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" ref={ref}>
+        {/* Header and Paragraph */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
-          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8 }}
           className="text-center mb-16"
         >
           <div className="flex items-center justify-center gap-3 mb-6">
             <Trophy className="w-8 h-8 text-yellow-500" />
-            <h2 className="text-3xl sm:text-4xl font-bold font-space-grotesk">Hackathon Leadership Experience</h2>
+            <h2 className="text-3xl sm:text-4xl font-bold font-space-grotesk">Hackathons</h2>
           </div>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
             Leading teams through high-pressure innovation challenges.
@@ -74,7 +78,8 @@ export default function Hackathons() {
         </motion.div>
 
         <div className="space-y-8">
-          {hackathons.map((hackathon, index) => (
+          {/* NEW: Slicing the array to only map the visibleCount */}
+          {hackathons.slice(0, visibleCount).map((hackathon, index) => (
             <motion.div
               key={hackathon._id}
               initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
@@ -99,14 +104,12 @@ export default function Hackathons() {
                       </div>
 
                       <div className="flex-1">
-                        {/* Added group-hover:text-primary transition-colors to match project cards */}
                         <h3 className="text-2xl font-bold font-space-grotesk mb-3 group-hover:text-primary transition-colors">
                           {hackathon.title}
                         </h3>
                         <p className="text-muted-foreground mb-6 leading-relaxed">{hackathon.description}</p>
 
                         <div className="mb-6">
-                          {/* Styled to match the Projects component modal subheadings */}
                           <h4 className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-3 flex items-center gap-2">
                             <Trophy className="w-4 h-4 text-yellow-500" /> Key Achievements
                           </h4>
@@ -120,7 +123,6 @@ export default function Hackathons() {
                         </div>
 
                         <div className="mb-6">
-                          {/* Styled to match the Projects component modal subheadings */}
                           <h4 className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-3">
                             Technologies Used
                           </h4>
@@ -142,6 +144,24 @@ export default function Hackathons() {
             </motion.div>
           ))}
         </div>
+
+        {/* NEW: Load More Button */}
+        {visibleCount < hackathons.length && (
+          <motion.div 
+            initial={{ opacity: 0 }} 
+            animate={{ opacity: 1 }} 
+            className="flex justify-center mt-12"
+          >
+            <Button 
+              onClick={() => setVisibleCount(prev => prev + 4)} 
+              variant="outline"
+              size="lg"
+              className="px-10 py-6 text-lg rounded-full border-primary/20 hover:border-primary/50 transition-all"
+            >
+              Load More Hackathons
+            </Button>
+          </motion.div>
+        )}
       </div>
     </section>
   )
