@@ -35,20 +35,31 @@ const ReviewTable: React.FC = () => {
         try {
             setLoading(true);
 
-            const response = await fetch(`${API_BASE}/api/reviews`);
+            const token = localStorage.getItem("adminToken") || localStorage.getItem("token");
+
+            const response = await fetch(`${API_BASE}/api/reviews/all`, {
+                method: "GET",
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                    "Content-Type": "application/json",
+                }
+            });
 
             if (!response.ok) {
                 throw new Error("Failed to fetch reviews");
             }
 
-            const data: Review[] = await response.json();
+           const result = await response.json();
 
-            // Sort by createdAt (newest first) so fresh reviews are at the top of your queue
-            const sortedReviews = data.sort(
-                (a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-            );
-
-            setReviews(sortedReviews);
+            // Check for success and map the inner data array
+            if (result.success) {
+                const sortedReviews = result.data.sort(
+                    (a: Review, b: Review) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+                );
+                setReviews(sortedReviews);
+            } else {
+                throw new Error(result.message || "Failed to load reviews");
+            }
 
         } catch (error: any) {
             setError(error.message);

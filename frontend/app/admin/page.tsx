@@ -15,6 +15,7 @@ import {
 } from "lucide-react"
 import HackathonTable from "@/components/admin/hackathonTable"
 import SkillTable from "@/components/admin/skillTable"
+import ReviewTable from "@/components/admin/reviewTable"
 
 export default function AdminDashboard() {
   const router = useRouter()
@@ -44,6 +45,8 @@ export default function AdminDashboard() {
         return <ResumeManager />
       case "skill":
         return <SkillTable />
+      case "reviews":
+        return <ReviewTable />
 
       default:
         return (
@@ -130,6 +133,19 @@ export default function AdminDashboard() {
                 <h3 className="text-2xl font-bold text-gray-900 mb-3">Manage Skills</h3>
                 <p className="text-gray-500 leading-relaxed">
                   Manage and add new skills to your portfolio.
+                </p>
+              </button>
+
+              <button
+                onClick={() => setActivePage("reviews")}
+                className="group bg-white border border-gray-200 rounded-3xl p-8 text-left hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
+              >
+                <div className="w-16 h-16 rounded-2xl bg-blue-100 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
+                  <FileText className="w-8 h-8 text-blue-600" />
+                </div>
+                <h3 className="text-2xl font-bold text-gray-900 mb-3">Manage Reviews</h3>
+                <p className="text-gray-500 leading-relaxed">
+                  Manage reviews on your portfolio by approving the reviews given by your friends and colleagues.
                 </p>
               </button>
             </div>
@@ -230,6 +246,18 @@ export default function AdminDashboard() {
           >
             <FileText className="w-5 h-5" />
             Skills
+          </button>
+
+          <button
+            onClick={() => setActivePage("reviews")}
+            className={`w-full flex items-center gap-3 px-5 py-4 rounded-2xl font-medium transition-all duration-300 ${
+              activePage === "reviews"
+                ? "bg-blue-600 text-white shadow-lg"
+                : "hover:bg-gray-100 text-gray-700"
+            }`}
+          >
+            <FileText className="w-5 h-5" />
+            Reviews
           </button>
         </nav>
       </aside>

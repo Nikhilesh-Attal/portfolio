@@ -237,6 +237,21 @@ export default function Reviews() {
                     <Textarea id="review" required placeholder="What was it like working together?" className="min-h-[100px]" value={formData.reviewText} onChange={(e) => setFormData({...formData, reviewText: e.target.value})} />
                   </div>
 
+                  <div className="space-y-2">
+                    <Label>Rating</Label>
+                      <div className="flex gap-1">
+                        {[1, 2, 3, 4, 5].map((star) => (
+                          <Star
+                            key={star}
+                            className={`w-6 h-6 cursor-pointer transition-colors ${
+                              formData.rating >= star ? 'fill-yellow-400 text-yellow-400' : 'text-muted/30'
+                            }`}
+                            onClick={() => setFormData({ ...formData, rating: star })}
+                          />
+                        ))}
+                      </div>
+                  </div>
+
                   <Button type="submit" className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white" disabled={isSubmitting}>
                     {isSubmitting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
                     Submit Review
