@@ -178,6 +178,9 @@ const ProjectTable: React.FC = () => {
                                 <td className="text-gray-900" style={tableCellStyle}>{project.category}</td>
                                 <td className="text-gray-900" style={tableCellStyle}>{project.status}</td>
                                 <td style={tableCellStyle}>
+                                    <button onClick={() => handleTogglePin(project)} style={{color: project.isPinned ? "orange" : "gray", marginRight: '10px', cursor: 'pointer'}}>
+                                        {project.isPinned ? "Unpin" : "Pin"}
+                                    </button>
                                     <button onClick={() => handleEdit(project)} style={{color: "green", marginRight: '10px', cursor: 'pointer'}}>Edit</button>
                                     <button onClick={() => handleDelete(project._id)} style={{color: "red", cursor: 'pointer'}}>Delete</button>
                                 </td>

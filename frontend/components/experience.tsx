@@ -1,11 +1,11 @@
 "use client"
 
-import { motion } from "framer-motion"
+import { motion, AnimatePresence } from "framer-motion"
 import { useEffect, useState } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { Briefcase, Sparkles } from "lucide-react"
+import { Briefcase, Sparkles, X, ExternalLink } from "lucide-react"
 
 interface Experience {
   _id: string
@@ -31,11 +31,10 @@ const formatDuration = (startStr: string, endStr?: string) => {
   const formattedStart = startDate.toLocaleDateString("en-US", formatOpts)
   const formattedEnd = endStr ? endDate.toLocaleDateString("en-US", formatOpts) : "Present"
 
-  // Calculate total months difference
   let months = (endDate.getFullYear() - startDate.getFullYear()) * 12
   months -= startDate.getMonth()
   months += endDate.getMonth()
-  months += 1 // Inclusive of starting month
+  months += 1 
 
   const years = Math.floor(months / 12)
   const remainingMonths = months % 12
@@ -51,6 +50,9 @@ export default function Experience() {
   const [experiences, setExperiences] = useState<Experience[]>([])
   const [loading, setLoading] = useState(true)
   const [visibleCount, setVisibleCount] = useState(6)
+  
+  // NEW: State to manage the open modal
+  const [selectedExperience, setSelectedExperience] = useState<Experience | null>(null)
 
   const rawPort = process.env.NEXT_PUBLIC_BACKEND_PORT || "";
   const API_BASE = rawPort.replace(/\/$/, "");
@@ -66,7 +68,6 @@ export default function Experience() {
 
         const data = await response.json()
 
-        // FIX: Sort ascending (oldest first, newest on the right)
         const sorted = data.sort(
           (a: Experience, b: Experience) => {
             const dateA = a.duration?.start ? new Date(a.duration.start).getTime() : 0;
@@ -96,13 +97,10 @@ export default function Experience() {
   }
 
   return (
-    // FIX: Removed hardcoded bg-slate-50. It now uses the global theme background.
     <section id="experience" className="py-20 relative overflow-hidden">
       
-      {/* FIX: Matched Skills bg-gradient with pointer-events-none and -z-10 */}
       <div className="absolute inset-0 pointer-events-none -z-10 bg-gradient-to-b from-transparent via-muted/5 to-transparent" />
 
-      {/* FIX: Added relative z-10 for interactivity */}
       <div className="max-w-[1400px] mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
         
         <motion.div
@@ -114,10 +112,8 @@ export default function Experience() {
         >
           <div className="flex items-center justify-center gap-3 mb-6">
             <Briefcase className="w-8 h-8 text-primary" />
-            {/* FIX: text-foreground replaces text-slate-800 */}
             <h2 className="text-3xl sm:text-4xl font-bold font-space-grotesk text-foreground">Professional Experience</h2>
           </div>
-          {/* FIX: text-muted-foreground replaces text-slate-600 */}
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
             Real-world experience building production-ready applications and working with professional development teams.
           </p>
@@ -164,29 +160,39 @@ export default function Experience() {
                       isUpNode ? "bottom-1/2 mb-12" : "top-1/2 mt-12"
                     }`}>
                       <div className={`absolute w-full px-2 ${isUpNode ? "bottom-1/2 mb-16" : "top-1/2 mt-16"}`}>
-                        {/* FIX: bg-card and border-border/50 for dark mode compatibility */}
-                        <Card className="bg-card border-border/50 transition-all duration-300 hover:shadow-xl hover:shadow-purple-500/10 hover:-translate-y-1">
-                          <CardContent className="p-4 space-y-2">
-                            {/* FIX: text-foreground */}
-                            <h3 className="font-bold text-foreground leading-tight truncate">{experience.role}</h3>
-                            {/* FIX: text-primary */}
-                            <p className="text-sm text-primary font-semibold">{experience.company}</p>
+                        
+                        <Card 
+                          onClick={() => setSelectedExperience(experience)}
+                          className="bg-card border-border/50 transition-all duration-300 hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-2 cursor-pointer group"
+                        >
+                          <CardContent className="p-5 space-y-3">
+                            <div>
+                                <h3 className="font-bold text-lg text-foreground leading-tight truncate group-hover:text-primary transition-colors">{experience.role}</h3>
+                                <p className="text-sm text-primary font-semibold">{experience.company}</p>
+                            </div>
                             
-                            {/* FIX: New Date and Month calculation string */}
-                            <p className="text-[11px] text-muted-foreground uppercase font-bold">
+                            <p className="text-[11px] text-muted-foreground uppercase font-bold tracking-wider">
                               {formatDuration(experience.duration.start, experience.duration.end)}
                             </p>
       
-                            <div className="text-xs text-muted-foreground space-y-1">
+                            <div className="text-sm text-muted-foreground space-y-1">
                               {experience.responsibilities.slice(0, 2).map((res, i) => (
                                 <p key={i} className="line-clamp-2">• {res}</p>
                               ))}
                             </div>
 
-                            <div className="flex flex-wrap gap-1 pt-2">
+                            {/* Show Read More cue if there are more responsibilities or details */}
+                            {experience.responsibilities.length > 2 && (
+                                <p className="text-xs text-primary font-semibold mt-1">Read more...</p>
+                            )}
+
+                            <div className="flex flex-wrap gap-1.5 pt-3 border-t border-border/50">
                               {experience.technologies.slice(0, 3).map(tech => (
-                                <Badge key={tech} variant="secondary" className="text-[10px]">{tech}</Badge>
+                                <Badge key={tech} variant="secondary" className="text-[10px] font-normal">{tech}</Badge>
                               ))}
+                              {experience.technologies.length > 3 && (
+                                  <span className="text-[10px] text-muted-foreground py-0.5">+{experience.technologies.length - 3} more</span>
+                              )}
                             </div>
                           </CardContent>
                         </Card>
@@ -204,13 +210,15 @@ export default function Experience() {
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            className="flex justify-center mt-6 mb-12"
+            className="flex justify-center mt-6 mb-12 relative z-30"
           >
+            {/* Added type="button" and explicit z-index to prevent click blocking */}
             <Button
+              type="button"
               onClick={() => setVisibleCount(prev => prev + 6)}
               variant="outline"
               size="lg"
-              className="rounded-full px-8 hover:scale-105 transition-all duration-300"
+              className="rounded-full px-8 hover:scale-105 transition-all duration-300 cursor-pointer border-primary/20 hover:border-primary/50"
             >
               Load More Experiences
             </Button>
@@ -224,7 +232,6 @@ export default function Experience() {
           transition={{ duration: 0.8, delay: 0.4 }}
           className="text-center"
         >
-          {/* FIX: Replaced hardcoded blue with theme-compatible muted background */}
           <div className="inline-flex items-center gap-3 px-8 py-4 rounded-2xl bg-muted/50 border border-border/50">
             <span className="text-lg font-medium text-foreground">Ready to bring this experience to your team?</span>
             <motion.span
@@ -236,8 +243,97 @@ export default function Experience() {
             </motion.span>
           </div>
         </motion.div>
-
       </div>
+
+      {/* --- DETAILS MODAL --- */}
+      <AnimatePresence>
+        {selectedExperience && (
+            <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
+                className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[100] flex items-center justify-center p-4 sm:p-6"
+                onClick={() => setSelectedExperience(null)}
+            >
+                <motion.div
+                    initial={{ scale: 0.95, opacity: 0, y: 20 }}
+                    animate={{ scale: 1, opacity: 1, y: 0 }}
+                    exit={{ scale: 0.95, opacity: 0, y: 20 }}
+                    transition={{ duration: 0.2 }}
+                    className="bg-card border border-muted w-full max-w-2xl max-h-[85vh] rounded-2xl shadow-2xl flex flex-col overflow-hidden relative"
+                    onClick={(e) => e.stopPropagation()}
+                >
+                    {/* Modal Header */}
+                    <div className="flex justify-between items-start p-6 border-b border-border/50 bg-muted/20">
+                        <div className="pr-8">
+                            <h3 className="text-2xl font-bold text-foreground font-space-grotesk">{selectedExperience.role}</h3>
+                            <div className="flex flex-wrap items-center gap-3 mt-2">
+                                <span className="text-lg text-primary font-semibold">{selectedExperience.company}</span>
+                                <Badge variant="outline" className="bg-background">{selectedExperience.workType}</Badge>
+                            </div>
+                            <p className="text-sm text-muted-foreground mt-2 font-medium">
+                                {formatDuration(selectedExperience.duration.start, selectedExperience.duration.end)}
+                            </p>
+                        </div>
+                        <Button variant="ghost" size="icon" className="rounded-full shrink-0" onClick={() => setSelectedExperience(null)}>
+                            <X className="w-5 h-5" />
+                        </Button>
+                    </div>
+
+                    {/* Modal Body (Scrollable) */}
+                    <div className="p-6 overflow-y-auto space-y-8">
+                        
+                        {/* Responsibilities */}
+                        <section>
+                            <h4 className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-4">Key Responsibilities</h4>
+                            <ul className="space-y-3">
+                                {selectedExperience.responsibilities.map((res, i) => (
+                                    <li key={i} className="flex items-start text-foreground leading-relaxed">
+                                        <span className="text-primary mr-3 text-lg leading-none">•</span>
+                                        <span>{res}</span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </section>
+
+                        {/* Technologies */}
+                        <section>
+                            <h4 className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-4">Technologies & Tools</h4>
+                            <div className="flex flex-wrap gap-2">
+                                {selectedExperience.technologies.map(tech => (
+                                    <Badge key={tech} variant="secondary" className="px-3 py-1 text-xs">
+                                        {tech}
+                                    </Badge>
+                                ))}
+                            </div>
+                        </section>
+
+                        {/* Certificates (If any exist) */}
+                        {selectedExperience.certificateUrl && selectedExperience.certificateUrl.length > 0 && selectedExperience.certificateUrl[0] !== "" && (
+                            <section>
+                                <h4 className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-4">Credentials</h4>
+                                <div className="flex flex-wrap gap-3">
+                                    {selectedExperience.certificateUrl.map((cert, index) => (
+                                        <Button 
+                                            key={index} 
+                                            variant="outline" 
+                                            size="sm" 
+                                            className="gap-2"
+                                            onClick={() => window.open(cert, "_blank")}
+                                        >
+                                            <ExternalLink className="w-4 h-4" /> 
+                                            View Certificate {selectedExperience.certificateUrl.length > 1 ? `#${index + 1}` : ''}
+                                        </Button>
+                                    ))}
+                                </div>
+                            </section>
+                        )}
+                    </div>
+                </motion.div>
+            </motion.div>
+        )}
+      </AnimatePresence>
+
     </section>
   )
 }

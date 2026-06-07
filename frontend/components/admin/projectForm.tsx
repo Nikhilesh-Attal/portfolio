@@ -1,4 +1,5 @@
 "use client"
+
 import { useState, useEffect } from "react"
 
 const convertToBase64 = (file: File): Promise<string> => {
@@ -17,24 +18,13 @@ interface ProjectFormProps {
 }
 
 export default function ProjectForm({ initialData, onSuccess, onCancel} : ProjectFormProps) {
-
-    useEffect(() => {
-        if(initialData) {
-            setFormData({
-                ...initialData,
-                tags: Array.isArray(initialData.tags) ? initialData.tags.join(', ') : '',
-                techStack: Array.isArray(initialData.techStack) ? initialData.techStack.join(', ') : '',
-            });
-        }
-    }, [initialData]);
-
+    // New States for Image Management
+    const [existingImages, setExistingImages] = useState<string[]>([]);
+    const [newImagePreviews, setNewImagePreviews] = useState<string[]>([]);
+    const [imageFiles, setImageFiles] = useState<File[]>([]);
+    
     const [loading, setLoading] = useState(false);
     const [message, setMessage] = useState("");
-    const [imageFiles, setImageFiles] = useState<File[]>([]);
-
-    // Safely parse URL to avoid double slash issues leading to 404s/500s
-    const rawPort = process.env.NEXT_PUBLIC_BACKEND_PORT || "";
-    const API_BASE = rawPort.replace(/\/$/, "");
 
     // Form State
     const [formData, setFormData] = useState({
@@ -46,9 +36,25 @@ export default function ProjectForm({ initialData, onSuccess, onCancel} : Projec
         githubUrl: '',
         tags: '', 
         techStack: '',
-        status: 'active',
+        status: 'completed',
         videoUrl: '',
     });
+
+    // Safely parse URL
+    const rawPort = process.env.NEXT_PUBLIC_BACKEND_PORT || "";
+    const API_BASE = rawPort.replace(/\/$/, "");
+
+    useEffect(() => {
+        if(initialData) {
+            setFormData({
+                ...initialData,
+                tags: Array.isArray(initialData.tags) ? initialData.tags.join(', ') : '',
+                techStack: Array.isArray(initialData.techStack) ? initialData.techStack.join(', ') : '',
+            });
+            // Load existing images if editing
+            setExistingImages(initialData.images || []);
+        }
+    }, [initialData]);
 
     const handleInputChanges = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
         setFormData({
@@ -59,34 +65,58 @@ export default function ProjectForm({ initialData, onSuccess, onCancel} : Projec
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         if (e.target.files) {
             const filesArray = Array.from(e.target.files);
-            if (filesArray.length > 3) {
-                alert("You can only upload up to 3 images.");
+            
+            // Validate total count (Existing + Currently Staged + Newly Selected)
+            if (existingImages.length + imageFiles.length + filesArray.length > 3) {
+                alert("You can only have up to 3 images per project.");
                 e.target.value = ""; // Clear input
                 return;
             }
-            setImageFiles(filesArray);
+            
+            const updatedFiles = [...imageFiles, ...filesArray];
+            setImageFiles(updatedFiles);
+            
+            // Create preview URLs for the UI
+            setNewImagePreviews(updatedFiles.map(file => URL.createObjectURL(file)));
         }
+    };
+
+    // Remove an image that is already saved in the database
+    const removeExistingImage = (indexToRemove: number) => {
+        setExistingImages(prev => prev.filter((_, index) => index !== indexToRemove));
+    };
+
+    // Remove an image that is staged for upload
+    const removeNewImage = (indexToRemove: number) => {
+        const updatedFiles = imageFiles.filter((_, index) => index !== indexToRemove);
+        setImageFiles(updatedFiles);
+        setNewImagePreviews(updatedFiles.map(file => URL.createObjectURL(file)));
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
 
+        // Final validation before sending
+        if (existingImages.length + imageFiles.length === 0) {
+            setMessage("At least one image is required.");
+            return;
+        }
+
         setLoading(true);
         setMessage("");
 
         const isEdit = !!initialData?._id;
-
         const url = isEdit
             ? `${API_BASE}/api/projects/${initialData._id}`
             : `${API_BASE}/api/projects`;
 
         try {
-            // Convert images
+            // Convert new files to Base64
             const base64Images = await Promise.all(
                 imageFiles.map(convertToBase64)
             );
 
-            // Create payload
+            // Create payload: Combine old kept URLs with new Base64 strings
             const projectPayload = {
                 ...formData,
 
@@ -100,7 +130,7 @@ export default function ProjectForm({ initialData, onSuccess, onCancel} : Projec
                     .map(tech => tech.trim())
                     .filter(Boolean),
 
-                images: base64Images,
+                images: [...existingImages, ...base64Images],
             };
 
             const token = localStorage.getItem("adminToken") || localStorage.getItem("token");
@@ -114,15 +144,12 @@ export default function ProjectForm({ initialData, onSuccess, onCancel} : Projec
                 body: JSON.stringify(projectPayload),
             });
 
-            // PROTECT AGAINST HTML ERROR PAGES
             const contentType = response.headers.get("content-type");
             let data: any = {};
             
-            // Only try to parse JSON if the server actually sent JSON
             if (contentType && contentType.includes("application/json")) {
                 data = await response.json();
             } else if (!response.ok) {
-                // Catch the Vercel HTML crash page cleanly
                 throw new Error(`Server error (${response.status}). The backend returned an invalid HTML response.`);
             }
 
@@ -145,6 +172,8 @@ export default function ProjectForm({ initialData, onSuccess, onCancel} : Projec
             setLoading(false);
         }
     };
+
+    const totalImages = existingImages.length + imageFiles.length;
 
     return (
         <form onSubmit={handleSubmit} className="max-w-2xl p-6 bg-white rounded-lg shadow-md space-y-4 text-gray-800">
@@ -210,10 +239,69 @@ export default function ProjectForm({ initialData, onSuccess, onCancel} : Projec
                 </div>
             </div>
 
-            <div>
-                <label className="block text-sm font-bold text-gray-900">Project Images (1-3 images required)</label>
-                <input type="file" accept="image/*" required={!initialData} multiple onChange={handleImageChange} className="mt-1 block w-full border border-gray-400 bg-white rounded-md p-2 text-black" />
+            {/* --- NEW IMAGE MANAGER UI --- */}
+            <div className="p-4 border border-gray-300 rounded-lg bg-gray-50">
+                <div className="flex justify-between items-center mb-4">
+                    <label className="block text-sm font-bold text-gray-900">Project Images</label>
+                    <span className="text-xs font-semibold text-gray-500 bg-gray-200 px-2 py-1 rounded">
+                        {totalImages} / 3 Uploaded
+                    </span>
+                </div>
+                
+                {/* Image Gallery */}
+                {(existingImages.length > 0 || newImagePreviews.length > 0) && (
+                    <div className="flex gap-4 mb-4 flex-wrap">
+                        {/* 1. Render Existing Database Images */}
+                        {existingImages.map((imgUrl, index) => (
+                            <div key={`existing-${index}`} className="relative w-24 h-24 border-2 border-gray-200 rounded-md overflow-hidden bg-white group">
+                                <img src={imgUrl} alt="Existing" className="object-cover w-full h-full" />
+                                <button 
+                                    type="button"
+                                    onClick={() => removeExistingImage(index)}
+                                    className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold shadow opacity-0 group-hover:opacity-100 transition-opacity"
+                                    title="Delete image"
+                                >
+                                    ✕
+                                </button>
+                            </div>
+                        ))}
+
+                        {/* 2. Render New Upload Previews */}
+                        {newImagePreviews.map((preview, index) => (
+                            <div key={`new-${index}`} className="relative w-24 h-24 border-2 border-blue-400 border-dashed rounded-md overflow-hidden bg-blue-50 group">
+                                <img src={preview} alt="New Preview" className="object-cover w-full h-full opacity-80" />
+                                <div className="absolute inset-0 flex items-center justify-center bg-blue-900/20 pointer-events-none">
+                                    <span className="text-[10px] font-bold text-white bg-blue-600 px-1.5 py-0.5 rounded">NEW</span>
+                                </div>
+                                <button 
+                                    type="button"
+                                    onClick={() => removeNewImage(index)}
+                                    className="absolute top-1 right-1 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold shadow opacity-0 group-hover:opacity-100 transition-opacity"
+                                    title="Remove draft image"
+                                >
+                                    ✕
+                                </button>
+                            </div>
+                        ))}
+                    </div>
+                )}
+
+                {/* File Input (Only visible if limit is not reached) */}
+                {totalImages < 3 && (
+                    <input 
+                        type="file" 
+                        accept="image/*" 
+                        required={totalImages === 0} 
+                        multiple 
+                        onChange={handleImageChange} 
+                        className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-md file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 cursor-pointer" 
+                    />
+                )}
+                {totalImages >= 3 && (
+                    <p className="text-sm text-orange-600 font-medium mt-2">Maximum of 3 images reached. Delete an image to upload a new one.</p>
+                )}
             </div>
+            {/* --- END IMAGE MANAGER UI --- */}
 
             <div className="flex gap-4 mt-6">
                 <button type="submit" disabled={loading} className="w-full bg-blue-600 text-white font-bold py-3 px-4 rounded-md hover:bg-blue-700 disabled:bg-blue-300 transition-colors">

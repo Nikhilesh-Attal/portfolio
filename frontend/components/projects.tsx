@@ -5,7 +5,7 @@ import { useRef, useState, useEffect, useMemo } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
-import { ExternalLink, Github, X, ChevronLeft, ChevronRight, Loader2 } from "lucide-react"
+import { ExternalLink, Github, X, ChevronLeft, ChevronRight, Loader2, Video } from "lucide-react"
 import Image from "next/image"
 
 // Interface matching your Admin Dashboard / Backend
@@ -47,9 +47,16 @@ export default function Projects() {
                 const response = await fetch(`${PORT}/api/projects`)
                 if (!response.ok) throw new Error("Failed to fetch")
                 const data = await response.json()
+
+                // CLEAN THE DATA FIRST
+                const cleanData = data.map((project: Project) => ({
+                    ...project,
+                    category: project.category ? project.category.trim() : "Uncategorized"
+                }));
                 
                 // Sort by pinned status first
-                const sorted = data.sort((a: Project, b: Project) => (b.isPinned ? 1 : 0) - (a.isPinned ? 1 : 0))
+                const sorted = cleanData.sort((a: Project, b: Project) => (b.isPinned ? 1 : 0) - (a.isPinned ? 1 : 0))
+                
                 setAllProjects(sorted)
                 setFilteredProjects(sorted)
             } catch (error) {
@@ -63,7 +70,7 @@ export default function Projects() {
 
     // 2. Derive Unique Categories for Filter Bar
     const categories = useMemo(() => {
-        const cats = allProjects.map(p => p.category)
+        const cats = allProjects.map(p => p.category);
         return ["All", ...Array.from(new Set(cats))]
     }, [allProjects])
 
@@ -100,9 +107,11 @@ export default function Projects() {
 
     return (
         <section id="projects" className="py-20 relative overflow-hidden">
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-muted/5 to-transparent" />
+            {/* FIX: Added pointer-events-none and -z-10 to stop it from blocking clicks */}
+            <div className="absolute inset-0 pointer-events-none -z-10 bg-gradient-to-b from-transparent via-muted/5 to-transparent" />
 
-            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" ref={ref}>
+            {/* FIX: Added relative and z-10 so the content sits above the background */}
+            <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10" ref={ref}>
                 <motion.div
                     initial={{ opacity: 0, y: 30 }}
                     animate={{ opacity: 1, y: 0 }}
@@ -112,16 +121,19 @@ export default function Projects() {
                     <h2 className="text-3xl sm:text-4xl font-bold font-space-grotesk mb-6">Featured Projects</h2>
                     
                     {/* Dynamic Filter Bar */}
-                    <div className="flex flex-wrap justify-center gap-3 mt-8">
+                    <div className="flex flex-wrap justify-center gap-3 mt-8 relative z-20">
                         {categories.map((cat) => (
-                            <Button
+                            <button
                                 key={cat}
-                                variant={activeFilter === cat ? "default" : "outline"}
                                 onClick={() => setActiveFilter(cat)}
-                                className="rounded-full capitalize px-6"
+                                className={`px-5 py-2 rounded-full text-sm font-semibold transition-all duration-300 border cursor-pointer ${
+                                    activeFilter === cat
+                                    ? "bg-gradient-to-r from-purple-600 to-blue-600 text-white border-transparent shadow-lg shadow-blue-500/30 scale-105"
+                                    : "bg-transparent text-muted-foreground border-border hover:bg-muted hover:text-foreground"
+                                }`}
                             >
                                 {cat}
-                            </Button>
+                            </button>
                         ))}
                     </div>
                 </motion.div>
@@ -138,7 +150,7 @@ export default function Projects() {
                                 exit={{ opacity: 0, scale: 0.9 }}
                                 transition={{ duration: 0.4, delay: index * 0.05 }}
                             >
-                                <Card className="group cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-purple-500/10 hover:-translate-y-2 overflow-hidden h-full border-muted/50 bg-card/50 backdrop-blur-sm">
+                                <Card className="group cursor-pointer transition-all duration-300 hover:shadow-xl hover:shadow-purple-500/10 hover:-translate-y-2 overflow-hidden h-full border-muted/50 bg-card/50 backdrop-blur-sm relative z-20">
                                     <div className="relative h-48 overflow-hidden" onClick={() => { setSelectedProject(project); setCurrentScreenshot(0); }}>
                                         <Image
                                             src={project.images[0] || "/placeholder.svg"}
@@ -169,13 +181,22 @@ export default function Projects() {
                                             {project.tags.length > 3 && <span className="text-[10px] text-muted-foreground">+{project.tags.length - 3} more</span>}
                                         </div>
 
-                                        <div className="flex gap-3 mt-auto">
-                                            <Button variant="ghost" size="sm" className="h-8 px-2 text-xs" onClick={(e) => { e.stopPropagation(); window.open(project.liveUrl, "_blank"); }}>
-                                                <ExternalLink className="w-3.5 h-3.5 mr-1" /> Live
-                                            </Button>
-                                            <Button variant="ghost" size="sm" className="h-8 px-2 text-xs" onClick={(e) => { e.stopPropagation(); window.open(project.githubUrl, "_blank"); }}>
-                                                <Github className="w-3.5 h-3.5 mr-1" /> Code
-                                            </Button>
+                                        <div className="flex gap-3 mt-auto relative z-30">
+                                            {project.liveUrl && (
+                                                <Button variant="ghost" size="sm" className="h-8 px-2 text-xs cursor-pointer" onClick={(e) => { e.stopPropagation(); window.open(project.liveUrl, "_blank"); }}>
+                                                    <ExternalLink className="w-3.5 h-3.5 mr-1" /> Live
+                                                </Button>
+                                            )}
+                                            {project.githubUrl && (
+                                                <Button variant="ghost" size="sm" className="h-8 px-2 text-xs cursor-pointer" onClick={(e) => { e.stopPropagation(); window.open(project.githubUrl, "_blank"); }}>
+                                                    <Github className="w-3.5 h-3.5 mr-1" /> Code
+                                                </Button>
+                                            )}
+                                            {project.videoUrl && (
+                                                <Button variant="ghost" size="sm" className="h-8 px-2 text-xs cursor-pointer" onClick={(e) => { e.stopPropagation(); window.open(project.videoUrl, "_blank"); }}>
+                                                    <Video className="w-3.5 h-3.5 mr-1" /> Video
+                                                </Button>
+                                            )}
                                         </div>
                                     </CardContent>
                                 </Card>
@@ -189,13 +210,13 @@ export default function Projects() {
                     <motion.div 
                         initial={{ opacity: 0 }} 
                         animate={{ opacity: 1 }} 
-                        className="flex justify-center mt-16"
+                        className="flex justify-center mt-8 relative z-30"
                     >
-                        <Button 
+                        <Button type="button"
                             onClick={() => setVisibleCount(prev => prev + 6)} 
                             variant="outline"
                             size="lg"
-                            className="px-10 py-6 text-lg rounded-full border-primary/20 hover:border-primary/50 transition-all"
+                            className="px-10 py-6 text-lg rounded-full border-primary/20 hover:border-primary/50 transition-all cursor-pointer"
                         >
                             Load More Projects
                         </Button>
@@ -204,7 +225,7 @@ export default function Projects() {
 
                 {/* Empty State */}
                 {!loading && filteredProjects.length === 0 && (
-                    <div className="text-center py-20">
+                    <div className="text-center py-20 relative z-20">
                         <p className="text-muted-foreground text-lg">No projects found in this category.</p>
                     </div>
                 )}
@@ -224,7 +245,7 @@ export default function Projects() {
                             initial={{ scale: 0.95, y: 20 }}
                             animate={{ scale: 1, y: 0 }}
                             exit={{ scale: 0.95, y: 20 }}
-                            className="bg-card border border-muted rounded-3xl max-w-5xl w-full max-h-[90vh] overflow-hidden shadow-2xl"
+                            className="bg-card border border-muted rounded-3xl max-w-5xl w-full max-h-[90vh] overflow-hidden shadow-2xl relative z-[110]"
                             onClick={(e) => e.stopPropagation()}
                         >
                             <div className="flex flex-col h-full">
@@ -234,7 +255,7 @@ export default function Projects() {
                                         <h3 className="text-2xl font-bold font-space-grotesk">{selectedProject.title}</h3>
                                         <p className="text-sm text-primary">{selectedProject.category}</p>
                                     </div>
-                                    <Button variant="ghost" size="icon" className="rounded-full" onClick={() => setSelectedProject(null)}>
+                                    <Button variant="ghost" size="icon" className="rounded-full cursor-pointer" onClick={() => setSelectedProject(null)}>
                                         <X className="w-6 h-6" />
                                     </Button>
                                 </div>
@@ -243,19 +264,19 @@ export default function Projects() {
                                     <div className="grid lg:grid-cols-2 gap-10">
                                         {/* Left: Gallery */}
                                         <div className="space-y-6">
-                                            <div className="relative aspect-video rounded-2xl overflow-hidden bg-muted group">
+                                            <div className="relative h-[300px] md:h-[450px] rounded-2xl overflow-hidden bg-muted/30 group border border-muted/50 p-2">
                                                 <Image
                                                     src={selectedProject.images[currentScreenshot] || "/placeholder.svg"}
                                                     alt="Gallery"
                                                     fill
-                                                    className="object-cover"
+                                                    className="object-cover p-2"
                                                 />
                                                 {selectedProject.images.length > 1 && (
                                                     <div className="absolute inset-0 flex items-center justify-between px-4 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                        <Button variant="secondary" size="icon" className="rounded-full shadow-lg" onClick={prevScreenshot}>
+                                                        <Button variant="secondary" size="icon" className="rounded-full shadow-lg cursor-pointer" onClick={prevScreenshot}>
                                                             <ChevronLeft className="w-5 h-5" />
                                                         </Button>
-                                                        <Button variant="secondary" size="icon" className="rounded-full shadow-lg" onClick={nextScreenshot}>
+                                                        <Button variant="secondary" size="icon" className="rounded-full shadow-lg cursor-pointer" onClick={nextScreenshot}>
                                                             <ChevronRight className="w-5 h-5" />
                                                         </Button>
                                                     </div>
@@ -268,7 +289,7 @@ export default function Projects() {
                                                         <button 
                                                             key={idx} 
                                                             onClick={() => setCurrentScreenshot(idx)}
-                                                            className={`relative w-20 h-14 rounded-lg overflow-hidden flex-shrink-0 border-2 transition-all ${currentScreenshot === idx ? 'border-primary' : 'border-transparent opacity-50'}`}
+                                                            className={`relative w-20 h-14 rounded-lg overflow-hidden flex-shrink-0 border-2 transition-all cursor-pointer ${currentScreenshot === idx ? 'border-primary' : 'border-transparent opacity-50'}`}
                                                         >
                                                             <Image src={img} alt="Thumbnail" fill className="object-cover" />
                                                         </button>
@@ -298,12 +319,23 @@ export default function Projects() {
                                             </div>
 
                                             <div className="mt-auto pt-8 flex flex-col sm:flex-row gap-4">
-                                                <Button size="lg" className="flex-1 text-lg py-7 rounded-xl shadow-lg shadow-primary/20" onClick={() => window.open(selectedProject.liveUrl, "_blank")}>
+                                                {selectedProject.liveUrl && (
+                                                <Button size="lg" className="flex-1 text-lg py-7 rounded-xl shadow-lg shadow-primary/20 cursor-pointer" onClick={() => window.open(selectedProject.liveUrl, "_blank")}>
                                                     <ExternalLink className="w-5 h-5 mr-2" /> View Live Project
                                                 </Button>
-                                                <Button size="lg" variant="outline" className="flex-1 text-lg py-7 rounded-xl" onClick={() => window.open(selectedProject.githubUrl, "_blank")}>
+                                                )}
+
+                                                {selectedProject.githubUrl && (
+                                                <Button size="lg" variant="outline" className="flex-1 text-lg py-7 rounded-xl cursor-pointer" onClick={() => window.open(selectedProject.githubUrl, "_blank")}>
                                                     <Github className="w-5 h-5 mr-2" /> Source Code
                                                 </Button>
+                                                )}
+
+                                                {selectedProject.videoUrl && (
+                                                <Button size="lg" variant="outline" className="flex-1 text-lg py-7 rounded-xl cursor-pointer" onClick={() => window.open(selectedProject.videoUrl, "_blank")}>
+                                                    <Video className="w-5 h-5 mr-2" /> Video
+                                                </Button>
+                                                )}
                                             </div>
                                         </div>
                                     </div>
