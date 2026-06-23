@@ -24,13 +24,13 @@ export const metadata: Metadata = {
 
   keywords: [
     "Nikhilesh Attal",
-    "Full Stack Developer",
+    "AI Automation", "Workflow Automation",
     "AI Developer",
     "Indie Maker",
     "Startup",
     "React",
-    "Next.js",
-    "TypeScript",
+    "n8n", "Automation", "Supabase", "LLM API Integration",
+    "TypeScript", "Next.js",
   ],
 
   authors: [{ name: "Nikhilesh Attal" }],
@@ -59,6 +59,10 @@ export const metadata: Metadata = {
   },
 
   generator: "v0.dev",
+
+  verification: {
+    google: "IxBW9TvP7CH7_s6NURRyFhZwn7JXtwjKBx0tkQAxNHM",
+  },
 };
 
 export default function RootLayout({
