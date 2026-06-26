@@ -8,7 +8,7 @@ import { Canvas } from "@react-three/fiber"
 import { OrbitControls, Sphere, MeshDistortMaterial } from "@react-three/drei"
 import { Suspense, useEffect, useState } from "react"
 import { FaRobot, FaReact, FaDatabase, FaRocket, FaBrain } from "react-icons/fa";
-import { SiN8N } from "react-icons/si"; // Perfect for your automation focus
+import { SiN8N } from "react-icons/si";
 
 function AnimatedSphere() {
   return (
@@ -20,7 +20,7 @@ function AnimatedSphere() {
 
 function Scene() {
   return (
-    <Canvas camera={{ position: [0, 0, 5] }}>
+    <Canvas camera={{ position: [0, 0, 5] }} aria-hidden="true">
       <ambientLight intensity={0.5} />
       <directionalLight position={[10, 10, 5]} intensity={1} />
       <Suspense fallback={null}>
@@ -82,7 +82,7 @@ function FloatingBubbles() {
   }
 
   return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none">
+    <div className="absolute inset-0 overflow-hidden pointer-events-none" aria-hidden="true">
       {bubbles.map((bubble) => (
         <motion.div
           key={bubble.id}
@@ -145,7 +145,7 @@ export default function Hero() {
       }
     };
     fetchResume();
-  }, []);
+  }, [API_BASE]);
 
   const handleDownloadResume = async () => {
     if (!resumeUrl) {
@@ -211,16 +211,17 @@ export default function Hero() {
                 </motion.h1>
               </motion.div>
 
-            <motion.p
+            {/* Changed from <p> to <h2> to establish proper document hierarchy */}
+            <motion.h2
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ duration: 0.8, delay: 0.4 }}
-              className="text-lg sm:text-xl text-muted-foreground max-w-2xl leading-relaxed"
+              className="text-lg sm:text-xl text-muted-foreground max-w-2xl leading-relaxed font-normal"
             >
-              AI Automation Engineer crafting intelligent systems with **n8n, Next.js, and LLMs**. 
+              <strong>AI Automation Engineer</strong> crafting intelligent systems with <strong>n8n, Next.js, and LLMs</strong>. 
               I specialize in turning unstructured data into structured assets and building 
               autonomous workflows that eliminate manual grind.
-            </motion.p>
+            </motion.h2>
 
             <motion.div
               initial={{ opacity: 0, y: 20 }}
@@ -232,14 +233,21 @@ export default function Hero() {
                 size="lg"
                 onClick={() => scrollToSection("contact")}
                 className="group bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white border-0"
+                aria-label="Contact me to work together"
               >
                 Work with me
-                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" />
+                <ArrowRight className="ml-2 h-4 w-4 transition-transform group-hover:translate-x-1" aria-hidden="true" />
               </Button>
 
-              <Button size="lg" variant="outline" onClick={() => scrollToSection("projects")} className="group">
+              <Button 
+                size="lg" 
+                variant="outline" 
+                onClick={() => scrollToSection("projects")} 
+                className="group"
+                aria-label="View my AI and Automation projects"
+              >
                 View projects
-                <ArrowDown className="ml-2 h-4 w-4 transition-transform group-hover:translate-y-1" />
+                <ArrowDown className="ml-2 h-4 w-4 transition-transform group-hover:translate-y-1" aria-hidden="true" />
               </Button>
             
               <Button 
@@ -247,30 +255,12 @@ export default function Hero() {
                 variant="outline" 
                 onClick={handleDownloadResume} 
                 className="group border-purple-500/50 hover:bg-purple-500/10 transition-all"
+                aria-label="Download my professional resume"
                 >
                   Download Resume
-                  <Download className="ml-2 h-4 w-4 transition-transform group-hover:translate-y-1" />
+                  <Download className="ml-2 h-4 w-4 transition-transform group-hover:translate-y-1" aria-hidden="true" />
               </Button>
             </motion.div>
-
-            {/* Stats
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.8, delay: 0.8 }}
-              className="grid grid-cols-3 gap-8 pt-8 border-t border-border/50"
-            >
-              {[
-                { number: "3+", label: "Products Built" },
-                { number: "100%", label: "Open Source" },
-                { number: "24/7", label: "AI Powered" },
-              ].map((stat, index) => (
-                <div key={index} className="text-center">
-                  <div className="text-2xl font-bold text-gradient font-space-grotesk">{stat.number}</div>
-                  <div className="text-sm text-muted-foreground">{stat.label}</div>
-                </div>
-              ))}
-            </motion.div> */}
           </div>
 
           {/* Right side - Profile Image with Animation */}
@@ -282,25 +272,22 @@ export default function Hero() {
           >
             {/* Main Profile Image Container */}
             <div className="relative w-80 h-80 lg:w-96 lg:h-96">
-              {/* Static Border (removed rotation) */}
+              {/* Static Border */}
               <div className="absolute inset-0 rounded-full bg-gradient-to-r from-purple-500 via-blue-500 to-emerald-500 p-1">
                 <div className="w-full h-full rounded-full bg-background p-4">
-                  {/* Profile Image - Replace with your actual photo */}
+                  {/* Profile Image */}
                   <div className="w-full h-full rounded-full bg-gradient-to-br from-purple-500/20 to-blue-500/20 flex items-center justify-center text-6xl font-bold text-gradient border-4 border-border/20 relative overflow-hidden">
-                    {/* Replace this with your actual image */}
                     <Image
-                      src="./formal_photo.jpeg" // Add your photo here
-                      alt="Nikhilesh Attal"
+                      src="./formal_photo.jpeg" 
+                      alt="Nikhilesh Attal - AI Automation Engineer"
                       fill
                       className="rounded-full object-cover"
+                      priority
                       onError={(e) => {
-                        // Fallback to initials if image not found
                         const target = e.target as HTMLImageElement
                         target.style.display = "none"
                       }}
                     />
-                    {/* Fallback initials */}
-                    {/* <span className="text-6xl font-bold text-gradient absolute inset-0 flex items-center justify-center">NA</span> */}
                   </div>
                 </div>
               </div>
@@ -315,13 +302,11 @@ export default function Hero() {
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: item.delay + 1, duration: 0.5 }}
                   whileHover={{ scale: 1.1, rotate: 5, backgroundColor: "var(--primary)" }}
+                  aria-label={`${item.label} Icon`}
                 >
                   <div className="relative flex flex-col items-center justify-center w-full h-full text-primary group-hover:text-white transition-colors">
-                    {/* Icon - Stays Centered */}
-                    <span className="text-2xl">{item.icon}</span>
-      
-                    {/* Label - Only shows on hover, absolute so it doesn't push the icon */}
-                    <span className="absolute -bottom-6 scale-0 group-hover:scale-100 text-[10px] font-bold uppercase tracking-tighter bg-background/90 px-2 py-1 rounded border border-border/50 transition-all duration-200 whitespace-nowrap text-foreground">
+                    <span className="text-2xl" aria-hidden="true">{item.icon}</span>
+                    <span className="absolute -bottom-6 scale-0 group-hover:scale-100 text-[10px] font-bold uppercase tracking-tighter bg-background/90 px-2 py-1 rounded border border-border/50 transition-all duration-200 whitespace-nowrap text-foreground" aria-hidden="true">
                       {item.label}
                     </span>
                   </div>
@@ -338,6 +323,7 @@ export default function Hero() {
         animate={{ opacity: 1 }}
         transition={{ delay: 1.5 }}
         className="absolute bottom-8 left-1/2 transform -translate-x-1/2"
+        aria-hidden="true"
       >
         <motion.div
           animate={{ y: [0, 10, 0] }}

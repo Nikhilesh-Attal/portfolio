@@ -61,6 +61,8 @@ export default function Navbar() {
 
   return (
     <motion.nav
+      role="navigation"
+      aria-label="Main Navigation"
       initial={{ y: -100 }}
       animate={{ y: 0 }}
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
@@ -75,6 +77,7 @@ export default function Navbar() {
               variant="ghost"
               onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
               className="text-xl font-bold font-space-grotesk text-gradient hover:bg-transparent"
+              aria-label="Return to top of page"
             >
               NA
             </Button>
@@ -91,6 +94,7 @@ export default function Navbar() {
                 }`}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
+                aria-current={activeSection === item.href.slice(1) ? "page" : undefined}
               >
                 {item.name}
                 {activeSection === item.href.slice(1) && (
@@ -107,8 +111,13 @@ export default function Navbar() {
 
             {/* Admin Gateway Symbol */}
             <Link href="/login" tabIndex={-1}>
-              <Button variant={"ghost"} size="icon" className="text-muted-foreground hover:text-foreground hover:bg-muted/50.rounded-full" areia-label="Admin Login">
-                <Lock size={16} />
+              <Button 
+                variant={"ghost"} 
+                size="icon" 
+                className="text-muted-foreground hover:text-foreground hover:bg-muted/50 rounded-full" 
+                aria-label="Admin Login"
+              >
+                <Lock size={16} aria-hidden="true" />
               </Button>
             </Link>
           </div>
@@ -120,9 +129,10 @@ export default function Navbar() {
               variant="ghost"
               size="sm"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+              aria-expanded={isMobileMenuOpen}
               aria-label="Toggle mobile menu"
             >
-              {isMobileMenuOpen ? <X size={20} /> : <Menu size={20} />}
+              {isMobileMenuOpen ? <X size={20} aria-hidden="true" /> : <Menu size={20} aria-hidden="true" />}
             </Button>
           </div>
         </div>
@@ -150,6 +160,7 @@ export default function Navbar() {
                       ? "text-primary bg-primary/10"
                       : "text-muted-foreground hover:text-foreground hover:bg-muted/50"
                   }`}
+                  aria-current={activeSection === item.href.slice(1) ? "page" : undefined}
                 >
                   {item.name}
                 </motion.button>

@@ -18,19 +18,23 @@ const spaceGrotesk = Space_Grotesk({
 });
 
 export const metadata: Metadata = {
-  title: "Nikhilesh Attal - AI-Powered Full-Stack Indie Maker",
+  // 1. Primary Keyword in Title
+  title: "Nikhilesh Attal | AI Automation Engineer & Product Builder",
+  
+  // 2. Secondary Keywords woven into the Description
   description:
-    "I build fast, honest products without waiting for permission. Full-stack developer specializing in AI automation, startup tools, and modern web applications.",
+    "Portfolio of Nikhilesh Attal, an AI Automation Engineer and AI-Powered Product Builder. Specializing in n8n development, LLM API integration, and automated workflow architecture.",
 
+  // 3. Cleaned and targeted Keyword Array
   keywords: [
     "Nikhilesh Attal",
-    "AI Automation", "Workflow Automation",
-    "AI Developer",
-    "Indie Maker",
-    "Startup",
-    "React",
-    "n8n", "Automation", "Supabase", "LLM API Integration",
-    "TypeScript", "Next.js",
+    "AI Automation Engineer",
+    "n8n developer",
+    "AI-Powered Product Builder",
+    "LLM API Integration",
+    "Automated Workflow Architect",
+    "Next.js",
+    "Full-Stack AI Developer",
   ],
 
   authors: [{ name: "Nikhilesh Attal" }],
@@ -40,17 +44,28 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: "https://nikhilesh-attal-portfolio.vercel.app",
-    title: "Nikhilesh Attal - AI-Powered Full-Stack Indie Maker",
+    title: "Nikhilesh Attal | AI Automation Engineer",
     description:
-      "I build fast, honest products without waiting for permission.",
+      "Portfolio of Nikhilesh Attal, an AI Automation Engineer and AI-Powered Product Builder. Specializing in n8n development, LLM API integration, and automated workflow architecture.",
     siteName: "Nikhilesh Attal Portfolio",
+    // 4. Added OpenGraph Image for social sharing
+    images: [
+      {
+        url: "/og-image.jpg", 
+        width: 1200,
+        height: 630,
+        alt: "Nikhilesh Attal - AI Automation Engineer Portfolio",
+      },
+    ],
   },
 
   twitter: {
     card: "summary_large_image",
-    title: "Nikhilesh Attal - AI-Powered Full-Stack Indie Maker",
+    title: "Nikhilesh Attal | AI Automation Engineer",
     description:
-      "I build fast, honest products without waiting for permission.",
+      "Portfolio of Nikhilesh Attal, an AI Automation Engineer and AI-Powered Product Builder.",
+    // 5. Added Twitter Card Image
+    images: ["/og-image.jpg"], 
   },
 
   robots: {

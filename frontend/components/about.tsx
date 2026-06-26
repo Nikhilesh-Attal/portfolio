@@ -10,27 +10,27 @@ import { Zap, Workflow, Target, Cpu, Sparkles } from "lucide-react"
 const traits = [
   {
     title: "Relentless Builder",
-    description: "I don't just write code; I ship solutions. My focus is on reducing the time between 'Idea' and 'Live Product'.",
+    description: "As an AI-Powered Product Builder, I don't just write code; I ship solutions. My focus is on reducing the time between 'Idea' and 'Live Product'.",
     story: "Developed and deployed StartupHQ-AI and ScrapJob, achieving full-stack functionality in weeks, not months.",
-    icon: <Zap className="w-6 h-6 text-yellow-500" />,
+    icon: <Zap className="w-6 h-6 text-yellow-500" aria-hidden="true" />,
   },
   {
-    title: "Agentic Orchestrator",
-    description: "I design the 'nervous system' of applications using n8n and Make.com to bridge AI with real-world workflows.",
+    title: "Automated Workflow Architect",
+    description: "I design the 'nervous system' of applications. As a specialized n8n developer, I use Make.com and n8n to bridge AI with real-world workflows.",
     story: "Architected a Smart HMS triage system that automates doctor appointments using intelligent AI agents.",
-    icon: <Workflow className="w-6 h-6 text-blue-500" />,
+    icon: <Workflow className="w-6 h-6 text-blue-500" aria-hidden="true" />,
   },
   {
     title: "Data Alchemist",
     description: "I specialize in transforming unstructured chaos—images, PDFs, and raw text—into structured, actionable JSON assets.",
     story: "Built Smart-Notes AI to instantly summarize complex PDFs and provide context-aware Q&A for students.",
-    icon: <Target className="w-6 h-6 text-emerald-500" />,
+    icon: <Target className="w-6 h-6 text-emerald-500" aria-hidden="true" />,
   },
   {
     title: "AI-First Architect",
-    description: "I view LLMs as teammates. I integrate intelligence into the core of the product rather than treating it as an add-on.",
+    description: "Focusing heavily on LLM API Integration, I view LLMs as teammates. I integrate intelligence into the core of the product rather than treating it as an add-on.",
     story: "Mastered prompt engineering to automate lead scraping and content generation workflows that run 24/7.",
-    icon: <Cpu className="w-6 h-6 text-purple-500" />,
+    icon: <Cpu className="w-6 h-6 text-purple-500" aria-hidden="true" />,
   },
 ]
 
@@ -63,8 +63,8 @@ export default function About() {
         >
           <h2 className="text-3xl sm:text-5xl font-bold font-space-grotesk mb-8">The Mission & The Maker</h2>
           <p className="text-xl text-muted-foreground max-w-4xl mx-auto mb-10 leading-relaxed">
-            I’m a developer who bridges the gap between raw code and intelligent systems. I believe in the power of{" "}
-            <span className="relative inline-block min-w-[230px] text-left">
+            I’m an <strong>AI Automation Engineer</strong> who bridges the gap between raw code and intelligent systems. I believe in the power of{" "}
+            <span className="relative inline-block min-w-[230px] text-left" aria-live="polite">
               <AnimatePresence mode="wait">
                 <motion.span
                   key={currentValueIndex}
@@ -112,6 +112,15 @@ export default function About() {
                 onMouseEnter={() => setFlippedCard(index)}
                 onMouseLeave={() => setFlippedCard(null)}
                 onClick={() => setFlippedCard(flippedCard === index ? null : index)}
+                role="button"
+                tabIndex={0}
+                aria-expanded={flippedCard === index}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    setFlippedCard(flippedCard === index ? null : index);
+                  }
+                }}
               >
                 <CardContent
                   className="p-8 h-full relative preserve-3d transition-transform duration-700"

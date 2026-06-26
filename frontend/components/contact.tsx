@@ -67,6 +67,7 @@ export default function Contact() {
           transition={{ duration: 0.8 }}
           className="text-center mb-16"
         >
+          {/* Changed to H2 for correct document outline */}
           <h2 className="text-3xl sm:text-4xl font-bold font-space-grotesk mb-6">Let's Build Something Great</h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Have an idea? Need a technical co-founder? Or just want to chat about AI and startups? I'm always excited to
@@ -74,7 +75,8 @@ export default function Contact() {
           </p>
         </motion.div>
 
-        <div className="grid md:grid-cols-3 gap-6 mb-12">
+        {/* Wrapped in an address tag for semantic SEO */}
+        <address className="not-italic grid md:grid-cols-3 gap-6 mb-12">
           {contactMethods.map((method, index) => {
             const Icon = method.icon
             return (
@@ -94,44 +96,50 @@ export default function Contact() {
                       whileHover={{ scale: 1.1, rotate: 5 }}
                       transition={{ type: "spring", stiffness: 300 }}
                     >
-                      <Icon className="w-6 h-6 text-white" />
+                      <Icon className="w-6 h-6 text-white" aria-hidden="true" />
                     </motion.div>
 
                     <h3 className="text-lg font-semibold mb-2 font-space-grotesk">{method.label}</h3>
                     <p className="text-sm text-muted-foreground mb-4">{method.value}</p>
 
                     <div className="flex gap-2">
-  <Button
-    variant="outline"
-    size="sm"
-    asChild
-    className="flex-1 group-hover:bg-primary group-hover:text-primary-foreground transition-colors"
-  >
-    <a href={method.href} target="_blank" rel="noopener noreferrer">
-      Open
-    </a>
-  </Button>
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        asChild
+                        className="flex-1 group-hover:bg-primary group-hover:text-primary-foreground transition-colors"
+                      >
+                        <a 
+                          href={method.href} 
+                          target={method.label === 'Email' ? '_self' : '_blank'} 
+                          rel="noopener noreferrer"
+                          aria-label={`Open ${method.label} link`}
+                        >
+                          Open
+                        </a>
+                      </Button>
 
-  {method.label === "Email" && (
-    <Button 
-  variant="outline" 
-  size="sm" 
-  onClick={(e) => { 
-    e.stopPropagation(); 
-    copyEmail(); 
-  }} 
-  className="px-3 bg-transparent relative z-10"
->
-      {copiedEmail ? <Check className="w-4 h-4 text-green-500" /> : <Copy className="w-4 h-4" />}
-    </Button>
-  )}
-</div>
+                      {method.label === "Email" && (
+                        <Button 
+                          variant="outline" 
+                          size="sm" 
+                          onClick={(e) => { 
+                            e.stopPropagation(); 
+                            copyEmail(); 
+                          }} 
+                          className="px-3 bg-transparent relative z-10"
+                          aria-label="Copy email address to clipboard"
+                        >
+                          {copiedEmail ? <Check className="w-4 h-4 text-green-500" aria-hidden="true" /> : <Copy className="w-4 h-4" aria-hidden="true" />}
+                        </Button>
+                      )}
+                    </div>
                   </CardContent>
                 </Card>
               </motion.div>
             )
           })}
-        </div>
+        </address>
 
         {/* Main CTA */}
         <motion.div
@@ -141,54 +149,54 @@ export default function Contact() {
           className="text-center"
         >
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-  <Button
-    size="lg"
-    asChild
-    className="group bg-gradient-to-r from-purple-600 via-blue-600 to-emerald-600 hover:from-purple-700 hover:via-blue-700 hover:to-emerald-700 text-white border-0 px-8 py-4 text-lg font-semibold relative overflow-hidden"
-  >
-    <a href="https://cal.com/nikhilesh-attal/30min" target="_blank" rel="noopener noreferrer">
-  <span className="relative z-10 flex items-center">
-    Start a conversation
-    <Mail className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" />
-  </span>
+            <Button
+              size="lg"
+              asChild
+              className="group bg-gradient-to-r from-purple-600 via-blue-600 to-emerald-600 hover:from-purple-700 hover:via-blue-700 hover:to-emerald-700 text-white border-0 px-8 py-4 text-lg font-semibold relative overflow-hidden"
+            >
+              <a href="https://cal.com/nikhilesh-attal/30min" target="_blank" rel="noopener noreferrer" aria-label="Schedule a 30-minute meeting on Cal.com">
+                <span className="relative z-10 flex items-center">
+                  Start a conversation
+                  <Mail className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" aria-hidden="true" />
+                </span>
 
-      {/* Animated background */}
-      <motion.div
-        className="absolute inset-0 pointer-events-none bg-gradient-to-r from-purple-400 via-blue-400 to-emerald-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-        initial={false}
-      />
+                {/* Animated background */}
+                <motion.div
+                  className="absolute inset-0 pointer-events-none bg-gradient-to-r from-purple-400 via-blue-400 to-emerald-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                  initial={false}
+                />
 
-      {/* Confetti effect on click */}
-      <motion.div
-        className="absolute inset-0 pointer-events-none"
-        initial={{ opacity: 0 }}
-        whileTap={{ opacity: 1 }}
-      >
-        {[...Array(12)].map((_, i) => (
-          <motion.div
-            key={i}
-            className="absolute w-2 h-2 bg-white rounded-full"
-            initial={{ scale: 0, x: "50%", y: "50%" }}
-            whileTap={{
-              scale: [0, 1, 0],
-              x: [0, (Math.random() - 0.5) * 200],
-              y: [0, (Math.random() - 0.5) * 200],
-            }}
-            transition={{
-              duration: 0.8,
-              delay: i * 0.05,
-              ease: "easeOut",
-            }}
-            style={{
-              left: "50%",
-              top: "50%",
-            }}
-          />
-        ))}
-      </motion.div>
-    </a>
-  </Button>
-</motion.div>
+                {/* Confetti effect on click */}
+                <motion.div
+                  className="absolute inset-0 pointer-events-none"
+                  initial={{ opacity: 0 }}
+                  whileTap={{ opacity: 1 }}
+                >
+                  {[...Array(12)].map((_, i) => (
+                    <motion.div
+                      key={i}
+                      className="absolute w-2 h-2 bg-white rounded-full"
+                      initial={{ scale: 0, x: "50%", y: "50%" }}
+                      whileTap={{
+                        scale: [0, 1, 0],
+                        x: [0, (Math.random() - 0.5) * 200],
+                        y: [0, (Math.random() - 0.5) * 200],
+                      }}
+                      transition={{
+                        duration: 0.8,
+                        delay: i * 0.05,
+                        ease: "easeOut",
+                      }}
+                      style={{
+                        left: "50%",
+                        top: "50%",
+                      }}
+                    />
+                  ))}
+                </motion.div>
+              </a>
+            </Button>
+          </motion.div>
 
           <motion.p
             initial={{ opacity: 0 }}

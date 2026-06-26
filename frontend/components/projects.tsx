@@ -142,7 +142,7 @@ export default function Projects() {
                 <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8 min-h-[400px]">
                     <AnimatePresence mode="popLayout">
                         {filteredProjects.slice(0, visibleCount).map((project, index) => (
-                            <motion.div
+                            <motion.article
                                 layout
                                 key={project._id}
                                 initial={{ opacity: 0, scale: 0.9 }}
@@ -154,7 +154,7 @@ export default function Projects() {
                                     <div className="relative h-48 overflow-hidden" onClick={() => { setSelectedProject(project); setCurrentScreenshot(0); }}>
                                         <Image
                                             src={project.images[0] || "/placeholder.svg"}
-                                            alt={project.title}
+                                            alt={`Screenshot of ${project.title} - ${project.shortDescription}`}
                                             fill
                                             className="object-cover transition-transform duration-500 group-hover:scale-110"
                                         />
@@ -200,7 +200,7 @@ export default function Projects() {
                                         </div>
                                     </CardContent>
                                 </Card>
-                            </motion.div>
+                            </motion.article>
                         ))}
                     </AnimatePresence>
                 </div>
@@ -320,19 +320,31 @@ export default function Projects() {
 
                                             <div className="mt-auto pt-8 flex flex-col sm:flex-row gap-4">
                                                 {selectedProject.liveUrl && (
-                                                <Button size="lg" className="flex-1 text-lg py-7 rounded-xl shadow-lg shadow-primary/20 cursor-pointer" onClick={() => window.open(selectedProject.liveUrl, "_blank")}>
+                                                <Button size="lg" 
+                                                    className="flex-1 text-lg py-7 rounded-xl shadow-lg shadow-primary/20 cursor-pointer" 
+                                                    onClick={() => window.open(selectedProject.liveUrl, "_blank")}
+                                                    aria-label={`View live demo of ${selectedProject.title}`}
+                                                >
                                                     <ExternalLink className="w-5 h-5 mr-2" /> View Live Project
                                                 </Button>
                                                 )}
 
                                                 {selectedProject.githubUrl && (
-                                                <Button size="lg" variant="outline" className="flex-1 text-lg py-7 rounded-xl cursor-pointer" onClick={() => window.open(selectedProject.githubUrl, "_blank")}>
+                                                <Button size="lg" variant="outline" 
+                                                    className="flex-1 text-lg py-7 rounded-xl cursor-pointer" 
+                                                    onClick={() => window.open(selectedProject.githubUrl, "_blank")} 
+                                                    aria-label={`View source code of ${selectedProject.title} on Github`}
+                                                >
                                                     <Github className="w-5 h-5 mr-2" /> Source Code
                                                 </Button>
                                                 )}
 
                                                 {selectedProject.videoUrl && (
-                                                <Button size="lg" variant="outline" className="flex-1 text-lg py-7 rounded-xl cursor-pointer" onClick={() => window.open(selectedProject.videoUrl, "_blank")}>
+                                                <Button size="lg" variant="outline" 
+                                                    className="flex-1 text-lg py-7 rounded-xl cursor-pointer" 
+                                                    onClick={() => window.open(selectedProject.videoUrl, "_blank")} 
+                                                    aria-label={`View video of ${selectedProject.title}`}
+                                                >
                                                     <Video className="w-5 h-5 mr-2" /> Video
                                                 </Button>
                                                 )}

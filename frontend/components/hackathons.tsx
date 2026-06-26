@@ -49,8 +49,8 @@ export default function Hackathons() {
 
   if (loading) {
     return (
-      <div className="py-20 flex flex-col items-center justify-center space-y-4">
-        <Loader2 className="w-10 h-10 animate-spin text-primary" />
+      <div className="py-20 flex flex-col items-center justify-center space-y-4" aria-live="polite" aria-busy="true">
+        <Loader2 className="w-10 h-10 animate-spin text-primary" aria-hidden="true" />
         <p className="text-muted-foreground animate-pulse">Fetching hackathons...</p>
       </div>
     )
@@ -69,18 +69,18 @@ export default function Hackathons() {
           className="text-center mb-16"
         >
           <div className="flex items-center justify-center gap-3 mb-6">
-            <Trophy className="w-8 h-8 text-yellow-500" />
+            <Trophy className="w-8 h-8 text-yellow-500" aria-hidden="true" />
             <h2 className="text-3xl sm:text-4xl font-bold font-space-grotesk">Hackathons</h2>
           </div>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-            Leading teams through high-pressure innovation challenges.
+            Leading teams through high-pressure innovation challenges to build scalable AI applications and intelligent systems.
           </p>
         </motion.div>
 
         <div className="space-y-8">
           {/* NEW: Slicing the array to only map the visibleCount */}
           {hackathons.slice(0, visibleCount).map((hackathon, index) => (
-            <motion.div
+            <motion.article
               key={hackathon._id}
               initial={{ opacity: 0, x: index % 2 === 0 ? -50 : 50 }}
               animate={{ opacity: 1, x: 0 }}
@@ -88,18 +88,18 @@ export default function Hackathons() {
             >
               <Card className="group hover:shadow-xl transition-all duration-300 overflow-hidden bg-card border-border">
                 <CardContent className="p-0">
-                  <div className={`h-2 bg-gradient-to-r ${hackathon.color || "from-blue-500 to-purple-500"}`} />
+                  <div className={`h-2 bg-gradient-to-r ${hackathon.color || "from-blue-500 to-purple-500"}`} aria-hidden="true" />
                   <div className="p-8">
                     <div className="flex flex-col lg:flex-row lg:items-start gap-6">
                       
                       <div className="flex-shrink-0">
-                        <div className="w-20 h-20 rounded-2xl bg-muted flex items-center justify-center text-4xl mb-4">
+                        <div className="w-20 h-20 rounded-2xl bg-muted flex items-center justify-center text-4xl mb-4" aria-hidden="true">
                           {hackathon.icon || "💻"}
                         </div>
                         <div className="space-y-2 text-muted-foreground">
-                          <div className="flex items-center gap-2 text-sm"><Clock className="w-4 h-4" /> {hackathon.duration}</div>
-                          <div className="flex items-center gap-2 text-sm"><Users className="w-4 h-4" /> {hackathon.member} Team Size</div>
-                          <div className="flex items-center gap-2 text-sm"><Target className="w-4 h-4" /> {hackathon.role}</div>
+                          <div className="flex items-center gap-2 text-sm"><Clock className="w-4 h-4" aria-hidden="true" /> {hackathon.duration}</div>
+                          <div className="flex items-center gap-2 text-sm"><Users className="w-4 h-4" aria-hidden="true" /> {hackathon.member} Team Size</div>
+                          <div className="flex items-center gap-2 text-sm"><Target className="w-4 h-4" aria-hidden="true" /> {hackathon.role}</div>
                         </div>
                       </div>
 
@@ -111,12 +111,12 @@ export default function Hackathons() {
 
                         <div className="mb-6">
                           <h4 className="text-sm font-bold uppercase tracking-widest text-muted-foreground mb-3 flex items-center gap-2">
-                            <Trophy className="w-4 h-4 text-yellow-500" /> Key Achievements
+                            <Trophy className="w-4 h-4 text-yellow-500" aria-hidden="true" /> Key Achievements
                           </h4>
                           <ul className="space-y-2">
                             {hackathon.achievement ? (
                               <li className="text-sm text-muted-foreground flex items-start gap-2">
-                                <span className="text-primary mt-1">•</span> {hackathon.achievement}
+                                <span className="text-primary mt-1" aria-hidden="true">•</span> {hackathon.achievement}
                               </li>
                             ) : null}
                           </ul>
@@ -133,15 +133,19 @@ export default function Hackathons() {
                           </div>
                         </div>
 
-                        <Button variant="outline" onClick={() => window.open(hackathon.links?.[0], "_blank")}>
-                          <ExternalLink className="w-4 h-4 mr-2" /> View Project
+                        <Button 
+                          variant="outline" 
+                          onClick={() => window.open(hackathon.links?.[0], "_blank")}
+                          aria-label={`View ${hackathon.title} Project`}
+                        >
+                          <ExternalLink className="w-4 h-4 mr-2" aria-hidden="true" /> View Project
                         </Button>
                       </div>
                     </div>
                   </div>
                 </CardContent>
               </Card>
-            </motion.div>
+            </motion.article>
           ))}
         </div>
 
@@ -153,6 +157,7 @@ export default function Hackathons() {
             className="flex justify-center mt-12"
           >
             <Button 
+              type="button"
               onClick={() => setVisibleCount(prev => prev + 4)} 
               variant="outline"
               size="lg"

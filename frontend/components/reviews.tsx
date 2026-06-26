@@ -72,7 +72,7 @@ export default function Reviews() {
     }
 
     fetchReviews()
-  }, [])
+  }, [API_BASE])
 
   // Handle Form Submission
   const handleSubmit = async (e: React.FormEvent) => {
@@ -106,7 +106,7 @@ export default function Reviews() {
 
   const content = isLoading ? (
     <div className="py-12 flex items-center justify-center">
-      <Loader2 className="w-10 h-10 animate-spin text-purple-500" />
+      <Loader2 className="w-10 h-10 animate-spin text-purple-500" aria-hidden="true" />
     </div>
   ) : error ? (
     <div className="py-12 flex items-center justify-center">
@@ -129,38 +129,41 @@ export default function Reviews() {
         {marqueeReviews.map((review, index) => (
           <Card key={`${review._id}-${index}`} className="w-[350px] md:w-[400px] shrink-0 hover:shadow-lg hover:shadow-purple-500/10 transition-all duration-300 relative overflow-hidden">
             <CardContent className="p-6">
-              <div className="absolute top-4 right-4 text-4xl font-black text-muted/10 pointer-events-none font-space-grotesk z-0">
-                {String((index % reviews.length) + 1).padStart(2, '0')}
-              </div>
-
-              <div className="flex justify-between items-start mb-4 relative z-10">
-                <Quote className="w-6 h-6 text-purple-500/30 transition-colors" />
-                <div className="flex gap-1">
-                  {[...Array(review.rating || 5)].map((_, i) => (
-                    <Star key={i} className="w-3 h-3 fill-yellow-400 text-yellow-400" />
-                  ))}
+              {/* Semantic Wrapper for Reviews */}
+              <figure className="m-0 h-full flex flex-col">
+                <div className="absolute top-4 right-4 text-4xl font-black text-muted/10 pointer-events-none font-space-grotesk z-0" aria-hidden="true">
+                  {String((index % reviews.length) + 1).padStart(2, '0')}
                 </div>
-              </div>
 
-              <blockquote className="text-muted-foreground mb-6 leading-relaxed text-sm line-clamp-4 relative z-10">
-                "{review.reviewText}"
-              </blockquote>
-
-              <div className="flex items-center gap-3 relative z-10">
-                <Avatar className="w-10 h-10">
-                  <AvatarImage src={review.avatar || "/placeholder.svg"} alt={review.reviewerName} />
-                  <AvatarFallback className="bg-gradient-to-br from-purple-500 to-blue-500 text-white font-semibold text-sm">
-                    {review.reviewerName.substring(0, 2).toUpperCase()}
-                  </AvatarFallback>
-                </Avatar>
-
-                <div>
-                  <div className="font-semibold text-sm">{review.reviewerName}</div>
-                  <div className="text-xs text-muted-foreground">
-                    {review.reviewerTitle}
+                <div className="flex justify-between items-start mb-4 relative z-10">
+                  <Quote className="w-6 h-6 text-purple-500/30 transition-colors" aria-hidden="true" />
+                  <div className="flex gap-1" aria-label={`Rating: ${review.rating || 5} out of 5 stars`}>
+                    {[...Array(review.rating || 5)].map((_, i) => (
+                      <Star key={i} className="w-3 h-3 fill-yellow-400 text-yellow-400" aria-hidden="true" />
+                    ))}
                   </div>
                 </div>
-              </div>
+
+                <blockquote className="text-muted-foreground mb-6 leading-relaxed text-sm line-clamp-4 relative z-10 flex-grow">
+                  "{review.reviewText}"
+                </blockquote>
+
+                <figcaption className="flex items-center gap-3 relative z-10">
+                  <Avatar className="w-10 h-10">
+                    <AvatarImage src={review.avatar || "/placeholder.svg"} alt={review.reviewerName} />
+                    <AvatarFallback className="bg-gradient-to-br from-purple-500 to-blue-500 text-white font-semibold text-sm">
+                      {review.reviewerName.substring(0, 2).toUpperCase()}
+                    </AvatarFallback>
+                  </Avatar>
+
+                  <div>
+                    <div className="font-semibold text-sm">{review.reviewerName}</div>
+                    <div className="text-xs text-muted-foreground">
+                      {review.reviewerTitle}
+                    </div>
+                  </div>
+                </figcaption>
+              </figure>
             </CardContent>
           </Card>
         ))}
@@ -185,7 +188,7 @@ export default function Reviews() {
           className="text-center mb-16 px-4"
         >
           <div className="flex justify-center mb-4">
-            <Sparkles className="w-10 h-10 text-yellow-500" />
+            <Sparkles className="w-10 h-10 text-yellow-500" aria-hidden="true" />
           </div>
           <h2 className="text-3xl sm:text-4xl font-bold font-space-grotesk mb-6">What People Say</h2>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto mb-8">
@@ -196,7 +199,7 @@ export default function Reviews() {
           <Dialog>
             <DialogTrigger asChild>
               <Button className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white shadow-lg shadow-purple-500/25 rounded-full px-8 py-6 text-md font-medium">
-                <Plus className="w-5 h-5 mr-2" />
+                <Plus className="w-5 h-5 mr-2" aria-hidden="true" />
                 Leave a Review
               </Button>
             </DialogTrigger>
@@ -210,7 +213,7 @@ export default function Reviews() {
 
               {formSuccess ? (
                 <div className="py-6 text-center text-emerald-500 flex flex-col items-center gap-2">
-                  <Sparkles className="w-12 h-12" />
+                  <Sparkles className="w-12 h-12" aria-hidden="true" />
                   <p className="text-lg font-medium">Thank you for your feedback!</p>
                   <p className="text-sm text-muted-foreground">Your review has been sent and is pending approval.</p>
                 </div>
@@ -238,22 +241,31 @@ export default function Reviews() {
                   </div>
 
                   <div className="space-y-2">
-                    <Label>Rating</Label>
-                      <div className="flex gap-1">
+                    <Label id="rating-label">Rating</Label>
+                      <div className="flex gap-1" role="radiogroup" aria-labelledby="rating-label">
                         {[1, 2, 3, 4, 5].map((star) => (
                           <Star
                             key={star}
-                            className={`w-6 h-6 cursor-pointer transition-colors ${
+                            role="radio"
+                            aria-checked={formData.rating === star}
+                            tabIndex={0}
+                            className={`w-6 h-6 cursor-pointer transition-colors focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 rounded-sm ${
                               formData.rating >= star ? 'fill-yellow-400 text-yellow-400' : 'text-muted/30'
                             }`}
                             onClick={() => setFormData({ ...formData, rating: star })}
+                            onKeyDown={(e) => {
+                              if (e.key === 'Enter' || e.key === ' ') {
+                                e.preventDefault();
+                                setFormData({ ...formData, rating: star });
+                              }
+                            }}
                           />
                         ))}
                       </div>
                   </div>
 
                   <Button type="submit" className="w-full bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700 text-white" disabled={isSubmitting}>
-                    {isSubmitting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" /> : null}
+                    {isSubmitting ? <Loader2 className="w-4 h-4 mr-2 animate-spin" aria-hidden="true" /> : null}
                     Submit Review
                   </Button>
                 </form>
@@ -264,7 +276,7 @@ export default function Reviews() {
 
         {content}
 
-        {/* Call to Action (Now just a simple scroll/link to Contact) */}
+        {/* Call to Action */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
@@ -273,7 +285,7 @@ export default function Reviews() {
         >
           <a href="#contact" className="inline-flex items-center gap-3 px-8 py-4 rounded-2xl bg-gradient-to-r from-purple-500/10 to-blue-500/10 border border-purple-500/20 hover:bg-purple-500/20 transition-colors group">
             <span className="text-lg font-medium">Ready to start a project?</span>
-            <Handshake className="w-6 h-6 text-blue-500 group-hover:scale-110 transition-transform" />
+            <Handshake className="w-6 h-6 text-blue-500 group-hover:scale-110 transition-transform" aria-hidden="true" />
           </a>
         </motion.div>
       </div>

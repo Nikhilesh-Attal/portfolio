@@ -24,7 +24,7 @@ const qualities = [
   {
     icon: FaCogs,
     title: "Workflow Automation",
-    description: "Connecting APIs and building custom pipelines to eliminate manual work.",
+    description: "Connecting APIs and building custom pipelines via n8n and Make.com to eliminate manual work.",
   },
 ]
 
@@ -34,7 +34,7 @@ export default function WhatIBring() {
 
   return (
     <section className="py-20 relative overflow-hidden">
-      <div className="absolute inset-0 pointer-events-none -z-10 bg-gradient-to-b from-transparent via-muted/5 to-transparent" />
+      <div className="absolute inset-0 pointer-events-none -z-10 bg-gradient-to-b from-transparent via-muted/5 to-transparent" aria-hidden="true" />
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8" ref={ref}>
         <motion.div
@@ -45,13 +45,13 @@ export default function WhatIBring() {
         >
           <h2 className="text-3xl sm:text-4xl font-bold font-space-grotesk mb-6">What I Bring to the Table</h2>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-            More than just technical skills — I bring the mindset and energy that turns ideas into successful products.
+            More than just technical skills — I bring the mindset and energy that turns ideas into successful AI products and automated systems.
           </p>
         </motion.div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
           {qualities.map((quality, index) => (
-            <motion.div
+            <motion.article
               key={quality.title}
               initial={{ opacity: 0, y: 30, scale: 0.9 }}
               animate={isInView ? { opacity: 1, y: 0, scale: 1 } : {}}
@@ -69,7 +69,7 @@ export default function WhatIBring() {
                 transition={{ type: "spring", stiffness: 300 }}
               >
                 <div className="mb-4 relative z-10 flex justify-center">
-                  <quality.icon className="text-5xl text-purple-500 drop-shadow-lg" />
+                  <quality.icon className="text-5xl text-purple-500 drop-shadow-lg" aria-hidden="true" />
                 </div>
 
                 {/* Particle burst effect on hover */}
@@ -77,6 +77,7 @@ export default function WhatIBring() {
                   className="absolute inset-0 pointer-events-none"
                   initial={{ opacity: 0 }}
                   whileHover={{ opacity: 1 }}
+                  aria-hidden="true"
                 >
                   {[...Array(6)].map((_, i) => (
                     <motion.div
@@ -107,7 +108,7 @@ export default function WhatIBring() {
                 {quality.title}
               </h3>
               <p className="text-muted-foreground leading-relaxed">{quality.description}</p>
-            </motion.div>
+            </motion.article>
           ))}
         </div>
 
@@ -131,6 +132,7 @@ export default function WhatIBring() {
                 ease: "easeInOut",
               }}
               className="text-2xl"
+              aria-hidden="true"
             >
               <FaMagic />
             </motion.span>

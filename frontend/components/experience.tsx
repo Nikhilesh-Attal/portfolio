@@ -88,7 +88,7 @@ export default function Experience() {
 
   if (loading) {
     return (
-      <div className="py-20 flex justify-center">
+      <div className="py-20 flex justify-center" aria-live="polite" aria-busy="true">
         <p className="text-primary animate-pulse font-medium text-lg">
           Loading experiences...
         </p>
@@ -111,11 +111,11 @@ export default function Experience() {
           className="text-center mb-12"
         >
           <div className="flex items-center justify-center gap-3 mb-6">
-            <Briefcase className="w-8 h-8 text-primary" />
+            <Briefcase className="w-8 h-8 text-primary" aria-hidden="true" />
             <h2 className="text-3xl sm:text-4xl font-bold font-space-grotesk text-foreground">Professional Experience</h2>
           </div>
           <p className="text-lg text-muted-foreground max-w-3xl mx-auto">
-            Real-world experience building production-ready applications and working with professional development teams.
+            Real-world experience building production-ready AI applications, automated workflows, and working with professional development teams.
           </p>
         </motion.div>
 
@@ -134,13 +134,13 @@ export default function Experience() {
             <div className="flex gap-8 items-center min-h-[750px] relative w-max min-w-full px-4 md:px-12">
               
               {/* Timeline Center Line */}
-              <div className="absolute top-1/2 left-0 right-0 h-1.5 bg-gradient-to-r from-purple-500 via-blue-500 to-indigo-500 -translate-y-1/2 z-0 rounded-full opacity-70" />
+              <div className="absolute top-1/2 left-0 right-0 h-1.5 bg-gradient-to-r from-purple-500 via-blue-500 to-indigo-500 -translate-y-1/2 z-0 rounded-full opacity-70" aria-hidden="true" />
 
               {experiences.slice(0, visibleCount).map((experience, index) => {
                 const isUpNode = index % 2 === 0;
 
                 return (
-                  <motion.div
+                  <motion.article
                     key={experience._id}
                     initial={{ opacity: 0, y: 40 }}
                     whileInView={{ opacity: 1, y: 0 }}
@@ -149,12 +149,12 @@ export default function Experience() {
                     className="relative w-[320px] h-[500px] shrink-0 snap-center"
                   >
                     {/* Timeline Node Dot */}
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-primary border-4 border-background z-20 shadow-lg transition-transform hover:scale-125" />
+                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-primary border-4 border-background z-20 shadow-lg transition-transform hover:scale-125" aria-hidden="true" />
 
                     {/* Connecting Stem */}
                     <div className={`absolute left-1/2 w-0.5 bg-border z-10 -translate-x-1/2 ${
                       isUpNode ? "bottom-1/2 h-12" : "top-1/2 h-12"
-                    }`} />
+                    }`} aria-hidden="true" />
 
                     <div className={`absolute w-full px-2 ${
                       isUpNode ? "bottom-1/2 mb-12" : "top-1/2 mt-12"
@@ -162,7 +162,17 @@ export default function Experience() {
                       <div className={`absolute w-full px-2 ${isUpNode ? "bottom-1/2 mb-16" : "top-1/2 mt-16"}`}>
                         
                         <Card 
+                          role="button"
+                          tabIndex={0}
+                          aria-haspopup="dialog"
+                          aria-expanded={selectedExperience?._id === experience._id}
                           onClick={() => setSelectedExperience(experience)}
+                          onKeyDown={(e) => {
+                            if (e.key === 'Enter' || e.key === ' ') {
+                              e.preventDefault();
+                              setSelectedExperience(experience);
+                            }
+                          }}
                           className="bg-card border-border/50 transition-all duration-300 hover:shadow-xl hover:shadow-primary/10 hover:-translate-y-2 cursor-pointer group"
                         >
                           <CardContent className="p-5 space-y-3">
@@ -183,7 +193,7 @@ export default function Experience() {
 
                             {/* Show Read More cue if there are more responsibilities or details */}
                             {experience.responsibilities.length > 2 && (
-                                <p className="text-xs text-primary font-semibold mt-1">Read more...</p>
+                                <p className="text-xs text-primary font-semibold mt-1" aria-hidden="true">Read more...</p>
                             )}
 
                             <div className="flex flex-wrap gap-1.5 pt-3 border-t border-border/50">
@@ -198,7 +208,7 @@ export default function Experience() {
                         </Card>
                       </div>
                     </div>
-                  </motion.div>
+                  </motion.article>
                 )
               })}
             </div>
@@ -212,7 +222,6 @@ export default function Experience() {
             viewport={{ once: true }}
             className="flex justify-center mt-6 mb-12 relative z-30"
           >
-            {/* Added type="button" and explicit z-index to prevent click blocking */}
             <Button
               type="button"
               onClick={() => setVisibleCount(prev => prev + 6)}
@@ -238,6 +247,7 @@ export default function Experience() {
               animate={{ scale: [1, 1.15, 1], rotate: [0, 8, -8, 0] }}
               transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
               className="p-2 rounded-full bg-primary/10"
+              aria-hidden="true"
             >
               <Sparkles className="w-6 h-6 text-primary" />
             </motion.span>
@@ -256,6 +266,9 @@ export default function Experience() {
                 onClick={() => setSelectedExperience(null)}
             >
                 <motion.div
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby={`modal-title-${selectedExperience._id}`}
                     initial={{ scale: 0.95, opacity: 0, y: 20 }}
                     animate={{ scale: 1, opacity: 1, y: 0 }}
                     exit={{ scale: 0.95, opacity: 0, y: 20 }}
@@ -266,7 +279,7 @@ export default function Experience() {
                     {/* Modal Header */}
                     <div className="flex justify-between items-start p-6 border-b border-border/50 bg-muted/20">
                         <div className="pr-8">
-                            <h3 className="text-2xl font-bold text-foreground font-space-grotesk">{selectedExperience.role}</h3>
+                            <h3 id={`modal-title-${selectedExperience._id}`} className="text-2xl font-bold text-foreground font-space-grotesk">{selectedExperience.role}</h3>
                             <div className="flex flex-wrap items-center gap-3 mt-2">
                                 <span className="text-lg text-primary font-semibold">{selectedExperience.company}</span>
                                 <Badge variant="outline" className="bg-background">{selectedExperience.workType}</Badge>
@@ -275,8 +288,14 @@ export default function Experience() {
                                 {formatDuration(selectedExperience.duration.start, selectedExperience.duration.end)}
                             </p>
                         </div>
-                        <Button variant="ghost" size="icon" className="rounded-full shrink-0" onClick={() => setSelectedExperience(null)}>
-                            <X className="w-5 h-5" />
+                        <Button 
+                          variant="ghost" 
+                          size="icon" 
+                          className="rounded-full shrink-0" 
+                          onClick={() => setSelectedExperience(null)}
+                          aria-label="Close experience details"
+                        >
+                            <X className="w-5 h-5" aria-hidden="true" />
                         </Button>
                     </div>
 
@@ -289,7 +308,7 @@ export default function Experience() {
                             <ul className="space-y-3">
                                 {selectedExperience.responsibilities.map((res, i) => (
                                     <li key={i} className="flex items-start text-foreground leading-relaxed">
-                                        <span className="text-primary mr-3 text-lg leading-none">•</span>
+                                        <span className="text-primary mr-3 text-lg leading-none" aria-hidden="true">•</span>
                                         <span>{res}</span>
                                     </li>
                                 ))}
@@ -320,8 +339,9 @@ export default function Experience() {
                                             size="sm" 
                                             className="gap-2"
                                             onClick={() => window.open(cert, "_blank")}
+                                            aria-label={`View Certificate ${selectedExperience.certificateUrl.length > 1 ? index + 1 : ''}`}
                                         >
-                                            <ExternalLink className="w-4 h-4" /> 
+                                            <ExternalLink className="w-4 h-4" aria-hidden="true" /> 
                                             View Certificate {selectedExperience.certificateUrl.length > 1 ? `#${index + 1}` : ''}
                                         </Button>
                                     ))}
