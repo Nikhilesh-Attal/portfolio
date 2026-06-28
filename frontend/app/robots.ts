@@ -5,7 +5,8 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: "/api/", // Prevents search engines from crawling your backend API routes
+      // Use an array to list multiple paths
+      disallow: ["/api/", "/admin/", "/login"],
     },
     sitemap: "https://nikhilesh-attal-portfolio.vercel.app/sitemap.xml",
   };

@@ -1,18 +1,16 @@
-# 🌐 Developer Portfolio CMS
+# Developer Portfolio CMS
 
 A full-stack personal portfolio with a custom admin dashboard to manage projects, experience, and achievements dynamically.
 Built with a Next.js frontend and a Node.js + MongoDB backend.
 
----
 
-## 🚀 Overview
+## Overview
 
 This project converts a static developer portfolio into a dynamic content-managed system (CMS).
 Instead of editing code to update content, an authenticated admin panel allows creating, editing, and deleting portfolio entries stored in a database.
 
----
 
-## 🧱 Architecture
+## Architecture
 
 Frontend (Next.js) → Backend API (Node.js/Express) → MongoDB Atlas
 
@@ -21,9 +19,8 @@ Frontend (Next.js) → Backend API (Node.js/Express) → MongoDB Atlas
 * Images & PDFs stored securely via ImageKit
 * Backend serves data to frontend
 
----
 
-## ✨ Features
+## Features
 
 ### Public Portfolio
 
@@ -44,9 +41,8 @@ Frontend (Next.js) → Backend API (Node.js/Express) → MongoDB Atlas
 * Manage client reviews
 * Dynamic content updates without redeploy
 
----
 
-## 🖥️ Tech Stack
+## Tech Stack
 
 ### Frontend
 
@@ -68,9 +64,8 @@ Frontend (Next.js) → Backend API (Node.js/Express) → MongoDB Atlas
 
 * ImageKit (Media storage and optimization for Images & PDFs)
 
----
 
-## 📂 Project Structure
+## Project Structure
 
 ```text
 portfolio/
@@ -82,10 +77,19 @@ portfolio/
       globals.css
       layout.tsx
       page.tsx
+      robots.ts
     components/
       admin\
         projectForm.tsx
+        projectTable.tsx
         experienceForm.tsx
+        experienceTable.tsx
+        hackathonForm.tsx
+        hackathonTable.tsx
+        resumeManager.tsx
+        reviewTable.tsx
+        skillForm.tsx
+        skillTable.tsx
       ui/ 
       about.tsx
       contact.tsx
@@ -141,7 +145,7 @@ portfolio/
     index.js
     .env
 
-🗄️ Database Design
+Database Design
 
 Database: portfolio
 
@@ -207,67 +211,64 @@ email
 passwordHash
 createdAt
 
-🔐 Authentication
+Authentication
 Admin authentication uses JWT:
-
 Admin logs in with credentials
-
 Backend verifies password hash
-
 JWT token issued
-
 Protected routes require token
 
 Protected actions:
-
 Create content
-
 Edit content
-
 Delete content
-
 Upload Media (Images/PDFs)
 
-🔄 Data Flow
-Create project:
+## Data Flow
 
+Create project:
 Admin UI → POST /projects → ImageKit (if media) → MongoDB → Success
 
 Fetch projects:
-
 Frontend → GET /projects → MongoDB → Render
 
 Update project:
-
 Admin UI → PUT /projects/:id → MongoDB
 
 Delete project:
-
 Admin UI → DELETE /projects/:id → MongoDB
 
-⚙️ Local Development
-1️⃣ Clone repo
+# Local Development
+
+1️. Clone repo
 Bash
 git clone <repo-url>
 cd portfolio
-2️⃣ Backend setup
+
+2. Backend setup
 Bash
 cd backend
 npm install
 Create .env:
 
 Code snippet
+
+Backend .env.local
 mongodb_url=your_mongodb_connection_string
 JWT_SECRET=your_secret
-PORT=5000
+PORT=3000
 IMAGEKIT_PUBLIC_KEY=your_public_key
 IMAGEKIT_PRIVATE_KEY=your_private_key
 IMAGEKIT_URL_ENDPOINT=your_url_endpoint
+
+Frontend .env.local
+NEXT_PUBLIC_BACKEND_PORT=PORT{5000}/URL of backend
 Run backend:
 
 Bash
 npm run dev
-3️⃣ Frontend setup
+
+3️. Frontend setup
 Bash
 cd frontend
 npm install
