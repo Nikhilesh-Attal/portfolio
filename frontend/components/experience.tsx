@@ -129,38 +129,103 @@ export default function Experience() {
             <p className="text-muted-foreground text-lg">No experiences have been added yet.</p>
           </motion.div>
         ) : (
-          <div className="relative w-full overflow-x-auto pb-10 pt-4 snap-x snap-mandatory flex [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-            
-            <div className="flex gap-8 items-center min-h-[750px] relative w-max min-w-full px-4 md:px-12">
-              
-              {/* Timeline Center Line */}
-              <div className="absolute top-1/2 left-0 right-0 h-1.5 bg-gradient-to-r from-purple-500 via-blue-500 to-indigo-500 -translate-y-1/2 z-0 rounded-full opacity-70" aria-hidden="true" />
+          <div className="w-full">
+            {/* MOBILE & TABLET VERTICAL TIMELINE LAYOUT */}
+            <div className="relative block lg:hidden max-w-xl mx-auto px-4 py-10">
+              {/* Vertical Center Line */}
+              <div className="absolute left-6 top-0 bottom-0 w-1 bg-gradient-to-b from-purple-500 via-blue-500 to-indigo-500 rounded-full opacity-70 z-0" aria-hidden="true" />
 
-              {experiences.slice(0, visibleCount).map((experience, index) => {
-                const isUpNode = index % 2 === 0;
-
-                return (
+              <div className="space-y-12 w-full">
+                {experiences.slice(0, visibleCount).map((experience, index) => (
                   <motion.article
-                    key={experience._id}
-                    initial={{ opacity: 0, y: 40 }}
-                    whileInView={{ opacity: 1, y: 0 }}
+                    key={`mobile-${experience._id}`}
+                    initial={{ opacity: 0, x: -20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true, amount: 0.1 }}
-                    transition={{ duration: 0.5, delay: index * 0.1 }}
-                    className="relative w-[320px] h-[500px] shrink-0 snap-center"
+                    transition={{ duration: 0.5, delay: index * 0.05 }}
+                    className="relative pl-12 min-h-[100px] w-full"
                   >
                     {/* Timeline Node Dot */}
-                    <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-primary border-4 border-background z-20 shadow-lg transition-transform hover:scale-125" aria-hidden="true" />
+                    <div className="absolute left-4 top-6 -translate-x-1/2 w-4 h-4 rounded-full bg-primary border-4 border-background z-20 shadow-md" aria-hidden="true" />
 
-                    {/* Connecting Stem */}
-                    <div className={`absolute left-1/2 w-0.5 bg-border z-10 -translate-x-1/2 ${
-                      isUpNode ? "bottom-1/2 h-12" : "top-1/2 h-12"
-                    }`} aria-hidden="true" />
-
-                    <div className={`absolute w-full px-2 ${
-                      isUpNode ? "bottom-1/2 mb-12" : "top-1/2 mt-12"
-                    }`}>
-                      <div className={`absolute w-full px-2 ${isUpNode ? "bottom-1/2 mb-16" : "top-1/2 mt-16"}`}>
+                    <Card 
+                      role="button"
+                      tabIndex={0}
+                      aria-haspopup="dialog"
+                      aria-expanded={selectedExperience?._id === experience._id}
+                      onClick={() => setSelectedExperience(experience)}
+                      onKeyDown={(e) => {
+                        if (e.key === 'Enter' || e.key === ' ') {
+                          e.preventDefault();
+                          setSelectedExperience(experience);
+                        }
+                      }}
+                      className="bg-card border-border/50 transition-all duration-300 active:scale-[0.98] cursor-pointer group"
+                    >
+                      <CardContent className="p-5 space-y-3">
+                        <div>
+                          <h3 className="font-bold text-lg text-foreground leading-tight group-hover:text-primary transition-colors">{experience.role}</h3>
+                          <p className="text-sm text-primary font-semibold">{experience.company}</p>
+                        </div>
                         
+                        <p className="text-[11px] text-muted-foreground uppercase font-bold tracking-wider">
+                          {formatDuration(experience.duration.start, experience.duration.end)}
+                        </p>
+  
+                        <div className="text-sm text-muted-foreground space-y-1">
+                          {experience.responsibilities.slice(0, 2).map((res, i) => (
+                            <p key={i} className="line-clamp-2">• {res}</p>
+                          ))}
+                        </div>
+
+                        {experience.responsibilities.length > 2 && (
+                            <p className="text-xs text-primary font-semibold mt-1" aria-hidden="true">Read more...</p>
+                        )}
+
+                        <div className="flex flex-wrap gap-1.5 pt-3 border-t border-border/50">
+                          {experience.technologies.slice(0, 3).map(tech => (
+                            <Badge key={tech} variant="secondary" className="text-[10px] font-normal">{tech}</Badge>
+                          ))}
+                          {experience.technologies.length > 3 && (
+                              <span className="text-[10px] text-muted-foreground py-0.5">+{experience.technologies.length - 3} more</span>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  </motion.article>
+                ))}
+              </div>
+            </div>
+
+            {/* DESKTOP HORIZONTAL TIMELINE LAYOUT */}
+            <div className="hidden lg:flex relative w-full overflow-x-auto pb-16 pt-4 snap-x snap-mandatory [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
+              <div className="flex gap-8 items-center min-h-[650px] relative w-max min-w-full px-12">
+                {/* Horizontal Timeline Center Line */}
+                <div className="absolute top-1/2 left-0 right-0 h-1.5 bg-gradient-to-r from-purple-500 via-blue-500 to-indigo-500 -translate-y-1/2 z-0 rounded-full opacity-70" aria-hidden="true" />
+
+                {experiences.slice(0, visibleCount).map((experience, index) => {
+                  const isUpNode = index % 2 === 0;
+
+                  return (
+                    <motion.article
+                      key={`desktop-${experience._id}`}
+                      initial={{ opacity: 0, y: 40 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true, amount: 0.1 }}
+                      transition={{ duration: 0.5, delay: index * 0.1 }}
+                      className="relative w-[320px] h-[450px] shrink-0 snap-center"
+                    >
+                      {/* Timeline Node Dot */}
+                      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-6 h-6 rounded-full bg-primary border-4 border-background z-20 shadow-lg transition-transform hover:scale-125" aria-hidden="true" />
+
+                      {/* Connecting Stem */}
+                      <div className={`absolute left-1/2 w-0.5 bg-border z-10 -translate-x-1/2 ${
+                        isUpNode ? "bottom-1/2 h-12" : "top-1/2 h-12"
+                      }`} aria-hidden="true" />
+
+                      <div className={`absolute w-full px-2 left-0 ${
+                        isUpNode ? "bottom-1/2 mb-12" : "top-1/2 mt-12"
+                      }`}>
                         <Card 
                           role="button"
                           tabIndex={0}
@@ -177,8 +242,8 @@ export default function Experience() {
                         >
                           <CardContent className="p-5 space-y-3">
                             <div>
-                                <h3 className="font-bold text-lg text-foreground leading-tight truncate group-hover:text-primary transition-colors">{experience.role}</h3>
-                                <p className="text-sm text-primary font-semibold">{experience.company}</p>
+                              <h3 className="font-bold text-lg text-foreground leading-tight truncate group-hover:text-primary transition-colors">{experience.role}</h3>
+                              <p className="text-sm text-primary font-semibold">{experience.company}</p>
                             </div>
                             
                             <p className="text-[11px] text-muted-foreground uppercase font-bold tracking-wider">
@@ -191,7 +256,6 @@ export default function Experience() {
                               ))}
                             </div>
 
-                            {/* Show Read More cue if there are more responsibilities or details */}
                             {experience.responsibilities.length > 2 && (
                                 <p className="text-xs text-primary font-semibold mt-1" aria-hidden="true">Read more...</p>
                             )}
@@ -207,10 +271,10 @@ export default function Experience() {
                           </CardContent>
                         </Card>
                       </div>
-                    </div>
-                  </motion.article>
-                )
-              })}
+                    </motion.article>
+                  )
+                })}
+              </div>
             </div>
           </div>
         )}
