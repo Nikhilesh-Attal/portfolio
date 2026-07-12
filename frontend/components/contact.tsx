@@ -5,7 +5,7 @@ import { useInView } from "framer-motion"
 import { useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Mail, Linkedin, Github, Copy, Check } from "lucide-react"
+import { Mail, Linkedin, Github, Copy, Check, Twitter, ExternalLink } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 
 const contactMethods = [
@@ -30,6 +30,13 @@ const contactMethods = [
     href: "https://github.com/Nikhilesh-Attal",
     color: "from-gray-700 to-gray-900",
   },
+  {
+    icon: Twitter,
+    label: "Twitter",
+    value: "Follow me on Twitter",
+    href: "https://x.com/AttalNikhilesh",
+    color: "from-blue-400 to-blue-500",
+  }
 ]
 
 export default function Contact() {
@@ -57,7 +64,7 @@ export default function Contact() {
   }
 
   return (
-    <section id="contact" className="py-20 relative overflow-hidden">
+    <section id="contact" className="py-32 md:py-40 relative overflow-hidden">
       <div className="absolute inset-0 pointer-events-none -z-10 bg-gradient-to-b from-transparent via-muted/5 to-transparent" />
 
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8" ref={ref}>
@@ -67,7 +74,6 @@ export default function Contact() {
           transition={{ duration: 0.8 }}
           className="text-center mb-16"
         >
-          {/* Changed to H2 for correct document outline */}
           <h2 className="text-3xl sm:text-4xl font-bold font-space-grotesk mb-6">Let's Build Something Great</h2>
           <p className="text-lg text-muted-foreground max-w-2xl mx-auto">
             Have an idea? Need a technical co-founder? Or just want to chat about AI and startups? I'm always excited to
@@ -76,7 +82,7 @@ export default function Contact() {
         </motion.div>
 
         {/* Wrapped in an address tag for semantic SEO */}
-        <address className="not-italic grid md:grid-cols-3 gap-6 mb-12">
+        <address className="not-italic grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
           {contactMethods.map((method, index) => {
             const Icon = method.icon
             return (
@@ -141,68 +147,58 @@ export default function Contact() {
           })}
         </address>
 
-        {/* Main CTA */}
+        {/* Main CTA - Dual Buttons */}
         <motion.div
           initial={{ opacity: 0, y: 30 }}
           animate={isInView ? { opacity: 1, y: 0 } : {}}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="text-center"
+          className="text-center mt-20 mb-6"
         >
-          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
-            <Button
-              size="lg"
-              asChild
-              className="group bg-gradient-to-r from-purple-600 via-blue-600 to-emerald-600 hover:from-purple-700 hover:via-blue-700 hover:to-emerald-700 text-white border-0 px-8 py-4 text-lg font-semibold relative overflow-hidden"
-            >
-              <a href="https://cal.com/nikhilesh-attal/30min" target="_blank" rel="noopener noreferrer" aria-label="Schedule a 30-minute meeting on Cal.com">
-                <span className="relative z-10 flex items-center">
-                  Start a conversation
-                  <Mail className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" aria-hidden="true" />
-                </span>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 max-w-md mx-auto sm:max-w-none">
+            
+            {/* Primary CTA: Start Conversation */}
+            <motion.div className="w-full sm:w-auto" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+              <Button
+                size="lg"
+                asChild
+                className="group w-full sm:w-auto bg-gradient-to-r from-purple-600 via-blue-600 to-emerald-600 hover:from-purple-700 hover:via-blue-700 hover:to-emerald-700 text-white border-0 px-8 py-6 text-lg font-semibold relative overflow-hidden shadow-lg shadow-purple-500/10"
+              >
+                <a href="https://cal.com/nikhilesh-attal/30min" target="_blank" rel="noopener noreferrer" aria-label="Schedule a 30-minute meeting on Cal.com">
+                  <span className="relative z-10 flex items-center justify-center">
+                    Start a conversation
+                    <Mail className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1" aria-hidden="true" />
+                  </span>
 
-                {/* Animated background */}
-                <motion.div
-                  className="absolute inset-0 pointer-events-none bg-gradient-to-r from-purple-400 via-blue-400 to-emerald-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
-                  initial={false}
-                />
+                  <motion.div
+                    className="absolute inset-0 pointer-events-none bg-gradient-to-r from-purple-400 via-blue-400 to-emerald-400 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+                    initial={false}
+                  />
+                </a>
+              </Button>
+            </motion.div>
 
-                {/* Confetti effect on click */}
-                <motion.div
-                  className="absolute inset-0 pointer-events-none"
-                  initial={{ opacity: 0 }}
-                  whileTap={{ opacity: 1 }}
-                >
-                  {[...Array(12)].map((_, i) => (
-                    <motion.div
-                      key={i}
-                      className="absolute w-2 h-2 bg-white rounded-full"
-                      initial={{ scale: 0, x: "50%", y: "50%" }}
-                      whileTap={{
-                        scale: [0, 1, 0],
-                        x: [0, (Math.random() - 0.5) * 200],
-                        y: [0, (Math.random() - 0.5) * 200],
-                      }}
-                      transition={{
-                        duration: 0.8,
-                        delay: i * 0.05,
-                        ease: "easeOut",
-                      }}
-                      style={{
-                        left: "50%",
-                        top: "50%",
-                      }}
-                    />
-                  ))}
-                </motion.div>
-              </a>
-            </Button>
-          </motion.div>
+            {/* Secondary CTA: Read Articles */}
+            <motion.div className="w-full sm:w-auto" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }}>
+              <Button
+                size="lg"
+                variant="outline"
+                asChild
+                className="w-full sm:w-auto px-8 py-6 text-lg font-semibold border-border/80 hover:bg-muted/80 transition-colors"
+              >
+                <a href="https://medium.com/@nikhileshatal" target="_blank" rel="noopener noreferrer" aria-label="Read my articles on Medium">
+                  Read articles
+                  <ExternalLink className="ml-2 h-5 w-5 text-muted-foreground" aria-hidden="true" />
+                </a>
+              </Button>
+            </motion.div>
+
+          </div>
 
           <motion.p
             initial={{ opacity: 0 }}
             animate={isInView ? { opacity: 1 } : {}}
             transition={{ duration: 0.8, delay: 0.6 }}
-            className="text-sm text-muted-foreground mt-4"
+            className="text-sm text-muted-foreground mt-6"
           >
             Usually respond within 24 hours
           </motion.p>
@@ -213,7 +209,7 @@ export default function Contact() {
           initial={{ opacity: 0 }}
           animate={isInView ? { opacity: 1 } : {}}
           transition={{ duration: 0.8, delay: 0.8 }}
-          className="text-center mt-16 pt-8 border-t border-border/50"
+          className="text-center mt-28 pt-8 border-t border-border/50"
         >
           <p className="text-sm text-muted-foreground">
             Built with using Next.js, TypeScript, Tailwind CSS, and Framer Motion
