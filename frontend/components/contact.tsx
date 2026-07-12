@@ -5,7 +5,7 @@ import { useInView } from "framer-motion"
 import { useRef, useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Mail, Linkedin, Github, Copy, Check } from "lucide-react"
+import { Mail, Linkedin, Github, Copy, Check, Twitter } from "lucide-react"
 import { useToast } from "@/hooks/use-toast"
 
 const contactMethods = [
@@ -30,6 +30,13 @@ const contactMethods = [
     href: "https://github.com/Nikhilesh-Attal",
     color: "from-gray-700 to-gray-900",
   },
+  {
+    icon: Twitter,
+    label: "Twitter",
+    value: "Follow me on Twitter",
+    href: "https://x.com/AttalNikhilesh",
+    color: "from-blue-400 to-blue-500",
+  }
 ]
 
 export default function Contact() {
@@ -76,7 +83,7 @@ export default function Contact() {
         </motion.div>
 
         {/* Wrapped in an address tag for semantic SEO */}
-        <address className="not-italic grid md:grid-cols-3 gap-6 mb-12">
+        <address className="not-italic grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-12">
           {contactMethods.map((method, index) => {
             const Icon = method.icon
             return (
