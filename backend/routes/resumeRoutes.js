@@ -1,17 +1,18 @@
 import express from 'express';
-import { getResume, uploadResume } from '../controllers/resumeController.js';
+import { getResume, uploadResume, deleteResume } from '../controllers/resumeController.js';
 import upload from '../middleware/upload.js';
 import { protect } from '../middleware/auth.js';
 
 const router = express.Router();
 
-// Public route: get the current resume
-router.get('/', getResume);
+// Root Operations Base Path: /api/resume
+router.route('/')
+  .get(getResume) // Anyone can view the active resume
+  .post(protect, upload.single('resumeFile'), uploadResume); // Protected route for raw creation
 
-//this route does use authentication middleware, but we will add that later when we implement user authentication
-//router.post('/upload', upload.single('resumeFile'), uploadResume);
-
-// Protected Admin route: Upload/Update the resume "resumeFile" is the name of the field in your frontend form
-router.post('/upload', protect, upload.single('resumeFile'), uploadResume);
+// Target-Specific Operations Path: /api/resume/:id
+router.route('/:id')
+  .put(protect, upload.single('resumeFile'), uploadResume) // Updates matching target record key name
+  .delete(protect, deleteResume); // Wipes out cloud and DB matching targets completely
 
 export default router;

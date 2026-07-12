@@ -1,28 +1,32 @@
 "use client"
 
 import React, { useState, useEffect } from "react"
-import { FileText, UploadCloud, Loader2, ExternalLink } from "lucide-react"
+import { FileText, UploadCloud, Loader2, ExternalLink, Trash2 } from "lucide-react"
 
 export default function ResumeManager() {
   const [currentResume, setCurrentResume] = useState<any>(null)
   const [loading, setLoading] = useState(true)
   const [uploading, setUploading] = useState(false)
+  const [deleting, setDeleting] = useState(false)
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
 
   const rawPort = process.env.NEXT_PUBLIC_BACKEND_PORT || ""
   const API_BASE = rawPort.replace(/\/$/, "")
 
-  // Fetch the latest resume on load
+  // Fetch the latest active resume on component mount
   const fetchResume = async () => {
     try {
       setLoading(true)
       const response = await fetch(`${API_BASE}/api/resume`)
       if (response.ok) {
         const data = await response.json()
-        setCurrentResume(data)
+        // Gracefully handle array responses if backend returns a list
+        setCurrentResume(Array.isArray(data) ? data[0] : data)
+      } else {
+        setCurrentResume(null)
       }
     } catch (error) {
-      console.error("Failed to fetch resume", error)
+      console.error("Failed to fetch resume:", error)
     } finally {
       setLoading(false)
     }
@@ -32,41 +36,99 @@ export default function ResumeManager() {
     fetchResume()
   }, [])
 
-  // Handle the file upload
+  // Handle both saving a new resume (POST) and updating an existing one (PUT)
   const handleUpload = async () => {
     if (!selectedFile) return alert("Please select a file first.")
 
     try {
       setUploading(true)
       const formData = new FormData()
-      formData.append("file", selectedFile) // 'file' matches your multer setup
+      
+      // KEY FIX: The key 'resumeFile' matches the backend's upload.single('resumeFile')
+      // You can select any PDF file with any name on your computer; it will be appended correctly here.
+      formData.append("resumeFile", selectedFile) 
 
-      const response = await fetch(`${API_BASE}/api/resume`, {
-        method: "POST",
-        // Do NOT set Content-Type header manually when using FormData!
-        body: formData, 
+      let url = `${API_BASE}/api/resume`
+      let method = "POST"
+
+      // If a resume already exists in the database, target its specific ID via PUT
+      if (currentResume && currentResume._id) {
+        url = `${API_BASE}/api/resume/${currentResume._id}`
+        method = "PUT"
+      }
+
+      // Retrieve token from your application state storage (e.g., localStorage or cookies)
+      const token = localStorage.getItem("adminToken") 
+
+      const response = await fetch(url, {
+        method: method,
+        headers: {
+          "Authorization": `Bearer ${token}`
+        },
+        body: formData, // Notice: Do NOT manually set Content-Type header when sending FormData
       })
 
-      if (!response.ok) throw new Error("Upload failed")
+      if (!response.ok) {
+        const errData = await response.json()
+        throw new Error(errData.message || "Upload failed")
+      }
 
-      alert("Resume updated successfully!")
+      alert(currentResume ? "Resume updated successfully!" : "Resume uploaded successfully!")
       setSelectedFile(null)
-      fetchResume() // Refresh the view to show the new resume
-    } catch (error) {
+      fetchResume() 
+    } catch (error: any) {
       console.error("Error uploading resume:", error)
-      alert("Failed to upload resume.")
+      alert(`Failed to upload resume: ${error.message}`)
     } finally {
       setUploading(false)
     }
   }
 
-  if (loading) return <div className="p-5 font-bold flex items-center gap-2"><Loader2 className="animate-spin" /> Loading Resume Data...</div>
+  // Handle deleting the resume entirely from the portfolio database & cloud
+  const handleDelete = async () => {
+    if (!currentResume || !currentResume._id) return
+    if (!confirm("Are you sure you want to delete this resume? This cannot be undone.")) return
+
+    try {
+      setDeleting(true)
+      const token = localStorage.getItem("token")
+
+      const response = await fetch(`${API_BASE}/api/resume/${currentResume._id}`, {
+        method: "DELETE",
+        headers: {
+          "Authorization": `Bearer ${token}`
+        }
+      })
+
+      if (!response.ok) {
+        const errData = await response.json()
+        throw new Error(errData.message || "Delete failed")
+      }
+
+      alert("Resume deleted successfully!")
+      setCurrentResume(null)
+      fetchResume()
+    } catch (error: any) {
+      console.error("Error deleting resume:", error)
+      alert(`Failed to delete resume: ${error.message}`)
+    } finally {
+      setDeleting(false)
+    }
+  }
+
+  if (loading) {
+    return (
+      <div className="p-5 font-bold flex items-center gap-2 text-black">
+        <Loader2 className="animate-spin" /> Loading Resume Data...
+      </div>
+    )
+  }
 
   return (
     <div className="p-4 text-black font-sans max-w-2xl">
       <h2 className="mb-6 font-black text-2xl">Resume Management</h2>
 
-      {/* Current Resume Display */}
+      {/* Current Active Resume View Panel */}
       <div className="bg-gray-50 border border-gray-200 rounded-2xl p-6 mb-8">
         <h3 className="text-sm font-bold uppercase tracking-widest text-gray-500 mb-4">Current Active Resume</h3>
         {currentResume ? (
@@ -77,33 +139,47 @@ export default function ResumeManager() {
               </div>
               <div>
                 <p className="font-bold text-gray-900">resume.pdf</p>
-                <p className="text-sm text-gray-500">
-                  Last updated: {new Date(currentResume.lastUpdated).toLocaleDateString()}
-                </p>
+                {currentResume.lastUpdated && (
+                  <p className="text-sm text-gray-500">
+                    Last updated: {new Date(currentResume.lastUpdated).toLocaleDateString()}
+                  </p>
+                )}
               </div>
             </div>
-            <a 
-              href={currentResume.resumeUrl} 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="flex items-center gap-2 text-blue-600 font-bold hover:underline"
-            >
-              <ExternalLink className="w-4 h-4" /> View PDF
-            </a>
+            
+            <div className="flex items-center gap-4">
+              <a 
+                href={currentResume.resumeUrl} 
+                target="_blank" 
+                rel="noopener noreferrer"
+                className="flex items-center gap-2 text-blue-600 font-bold hover:underline"
+              >
+                <ExternalLink className="w-4 h-4" /> View PDF
+              </a>
+              
+              {/* <button
+                onClick={handleDelete}
+                disabled={deleting}
+                className="flex items-center gap-2 text-red-600 font-bold hover:underline disabled:text-gray-400"
+              >
+                {deleting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Trash2 className="w-4 h-4" />} Delete
+              </button> */}
+            </div>
           </div>
         ) : (
-          <p className="text-gray-500">No resume found. Please upload one below.</p>
+          <p className="text-gray-500">No active resume found. Please upload one below.</p>
         )}
       </div>
 
-      {/* Upload Section */}
+      {/* File Dropper / Selector Upload Section */}
       <div className="bg-white border-2 border-dashed border-gray-300 rounded-2xl p-8 text-center transition-colors hover:border-blue-500">
         <UploadCloud className="w-12 h-12 text-gray-400 mx-auto mb-4" />
         <h3 className="text-lg font-bold text-gray-900 mb-2">Upload New Resume</h3>
-        <p className="text-gray-500 mb-6">Uploading a new file will automatically replace the active resume on your portfolio.</p>
+        <p className="text-gray-500 mb-6">Uploading a new file will automatically replace or update the active resume on your portfolio.</p>
         
         <input 
           type="file" 
+          name="resumeFile"
           accept="application/pdf"
           onChange={(e) => setSelectedFile(e.target.files?.[0] || null)}
           className="block w-full text-sm text-gray-500 file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-blue-50 file:text-blue-700 hover:file:bg-blue-100 mb-4"
@@ -116,7 +192,7 @@ export default function ResumeManager() {
             !selectedFile || uploading ? "bg-gray-300 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-700 shadow-lg"
           }`}
         >
-          {uploading ? "Uploading to Cloud..." : "Upload & Update"}
+          {uploading ? "Uploading to Cloud..." : currentResume ? "Update Resume" : "Upload & Save"}
         </button>
       </div>
     </div>
