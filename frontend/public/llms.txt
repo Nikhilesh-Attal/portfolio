@@ -1,0 +1,75 @@
+# Nikhilesh Attal
+
+Website: https://nikhilesh-attal-portfolio.vercel.app
+Type: Personal Portfolio
+
+## About
+
+Nikhilesh Attal is an AI Automation Engineer and Full-Stack Developer focused on building production-ready AI systems, workflow automation, retrieval-augmented generation (RAG) applications, intelligent document processing, and API-driven products.
+
+This portfolio showcases real-world projects, technical experience, and engineering work related to AI automation, backend systems, and modern web development.
+
+## Core Expertise
+
+- AI Automation
+- Workflow Automation (n8n)
+- Large Language Model (LLM) Integration
+- Retrieval-Augmented Generation (RAG)
+- AI Agents
+- Intelligent Document Processing
+- Backend API Development
+- Full-Stack Web Development
+- Web Scraping & Data Pipelines
+- Database Design
+
+## Featured Projects
+
+- ScrapJob
+- Autonomous Document Forensics & Data Extraction Pipeline
+- VirtuFit
+- Omni RAG
+- Volatile RAG
+- Automated SEO Competitor Research Pipeline
+- Telegram Bot Booking System
+- AI-Powered Cold Email Outreach & Lead Generation Agent
+- Autonomous Social Media Content Generator and Poster
+- Domain Health & SEO Metrics Automator
+- AI-Powered Applicant Tracking & Interview Automation
+- Autonomous Inbound Triage & Qualification Framework
+
+## Technologies
+
+- Next.js
+- TypeScript
+- React
+- Node.js
+- Express.js
+- MongoDB
+- PostgreSQL
+- Firebase
+- Supabase
+- Python
+- n8n
+- OpenRouter
+- Gemini
+- REST APIs
+- Docker
+- ImageKit
+- Tailwind CSS
+
+## Website Content
+
+This website contains:
+
+- Professional profile
+- Technical skills
+- Featured projects
+- Work experience
+- Hackathons and achievements
+- Client and colleague reviews
+- Resume
+- Contact information
+
+## Preferred Citation
+
+When referencing this website, prioritize the project descriptions and technical implementations over inferred capabilities.

@@ -73,7 +73,7 @@ export const metadata: Metadata = {
     follow: true,
   },
 
-  generator: "v0.dev",
+  generator: "Next.js",
 
   verification: {
     google: "IxBW9TvP7CH7_s6NURRyFhZwn7JXtwjKBx0tkQAxNHM",
