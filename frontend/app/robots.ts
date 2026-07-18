@@ -2,12 +2,16 @@ import type { MetadataRoute } from "next";
 
 export default function robots(): MetadataRoute.Robots {
   return {
-    rules: {
+    rules: [{
       userAgent: "*",
       allow: "/",
       // Use an array to list multiple paths
       disallow: ["/api/", "/admin/", "/login"],
     },
+    {
+      userAgent: "Googlebot-Image",
+      allow: ["/og-image.jpg"],
+    }],
     sitemap: "https://nikhilesh-attal-portfolio.vercel.app/sitemap.xml",
   };
 }
