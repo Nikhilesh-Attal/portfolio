@@ -78,6 +78,7 @@ portfolio/
       layout.tsx
       page.tsx
       robots.ts
+      sitemap.ts
     components/
       admin\
         projectForm.tsx
@@ -111,6 +112,9 @@ portfolio/
       api.tsx
       utils.tsx
     public/
+      llms.txt
+      og-image.jpg
+      favicon.ico
     styles/
       globals.css
 
